@@ -19,7 +19,7 @@ const TASK_IDS: TaskId[] = ['intro', 'create', 'select-template', 'cd', 'install
 const taskStorageKey = (id: TaskId) => `create-seekdb-app-${id}`
 
 export function CreateSeekdbAppPage() {
-  const { lang } = useLanguage()
+  const { lang, t } = useLanguage()
   const T = useCallback(
     (key: keyof typeof createSeekdbAppTexts.zh, params?: Record<string, string | number>) =>
       getPageText(createSeekdbAppTexts, lang, key, params),
@@ -163,14 +163,9 @@ export function CreateSeekdbAppPage() {
               <CodeBlock
                 filename="README.md"
                 language="markdown"
-                code={`# create-seekdb-app
-
-- 一条命令创建完整的 seekdb 应用项目
-- 支持 Next.js、Electron、Express、Fastify 等多种模板
-- 自动生成项目结构和配置文件，开箱即用
-- 所有模板均提供完整 TypeScript 支持`}
-                stepHint="与 create-react-app、create-next-app 类似，专为 seekdb 应用定制的脚手架。"
-                expectedOutput={`# 说明文档，无执行输出`}
+                code={T('intro_code')}
+                stepHint={T('intro_stepHint')}
+                expectedOutput={`# ${t('codeBlock.docOnlyOutput')}`}
                 onRun={() => markComplete(taskStorageKey('intro'))}
               />
             </div>
@@ -183,16 +178,9 @@ export function CreateSeekdbAppPage() {
               <CodeBlock
                 filename="create.sh"
                 language="bash"
-                code={`# 使用 npm
-npm create seekdb-app@latest my-app
-
-# 使用 pnpm
-pnpm create seekdb-app my-app
-
-# 使用 yarn
-yarn create seekdb-app my-app`}
-                stepHint="将 my-app 替换为你的项目名称；工具会自动创建新目录。"
-                expectedOutput={`# 执行后会进入交互式提示，选择模板`}
+                code={T('create_code')}
+                stepHint={T('create_stepHint')}
+                expectedOutput={T('create_expectedOutput')}
                 onRun={() => markComplete(taskStorageKey('create'))}
               />
             </div>
@@ -205,13 +193,9 @@ yarn create seekdb-app my-app`}
               <CodeBlock
                 filename="select-template.txt"
                 language="text"
-                code={`? Select a template: (Use arrow keys)
-❯ Next.js + seekdb
-  Electron + Next.js + seekdb
-  Express + seekdb
-  Fastify + seekdb`}
-                stepHint="用方向键选择模板后回车，即可生成对应项目。"
-                expectedOutput={`# 选择后继续生成项目文件`}
+                code={T('select_template_code')}
+                stepHint={T('select_template_stepHint')}
+                expectedOutput={T('select_template_expectedOutput')}
                 onRun={() => markComplete(taskStorageKey('select-template'))}
               />
             </div>
@@ -224,9 +208,9 @@ yarn create seekdb-app my-app`}
               <CodeBlock
                 filename="navigate.sh"
                 language="bash"
-                code={`cd my-app`}
-                stepHint="若创建时使用了其他项目名，此处改为对应目录名。"
-                expectedOutput={`# 进入项目根目录后即可执行 install、dev 等`}
+                code={T('cd_code')}
+                stepHint={T('cd_stepHint')}
+                expectedOutput={T('cd_expectedOutput')}
                 onRun={() => markComplete(taskStorageKey('cd'))}
               />
             </div>
@@ -239,16 +223,9 @@ yarn create seekdb-app my-app`}
               <CodeBlock
                 filename="install.sh"
                 language="bash"
-                code={`# 使用 pnpm
-pnpm install
-
-# 或使用 npm
-npm install
-
-# 或使用 yarn
-yarn install`}
-                stepHint="在项目根目录执行，安装模板所需依赖。"
-                expectedOutput={`# 安装完成后可配置 .env.local 并运行 dev`}
+                code={T('install_code')}
+                stepHint={T('install_stepHint')}
+                expectedOutput={T('install_expectedOutput')}
                 onRun={() => markComplete(taskStorageKey('install'))}
               />
             </div>
@@ -261,14 +238,9 @@ yarn install`}
               <CodeBlock
                 filename=".env.local"
                 language="bash"
-                code={`# .env.local
-SEEKDB_HOST=127.0.0.1
-SEEKDB_PORT=2881
-SEEKDB_USER=root
-SEEKDB_PASSWORD=
-SEEKDB_DATABASE=test`}
-                stepHint="请勿将 .env.local 提交到 Git，其包含敏感连接信息。"
-                expectedOutput={`# 根据模板提示配置；保存后应用会读取这些变量`}
+                code={T('env_code')}
+                stepHint={T('env_stepHint')}
+                expectedOutput={T('env_expectedOutput')}
                 onRun={() => markComplete(taskStorageKey('env'))}
               />
             </div>
@@ -281,15 +253,9 @@ SEEKDB_DATABASE=test`}
               <CodeBlock
                 filename="dev.sh"
                 language="bash"
-                code={`pnpm dev
-
-# 或
-npm run dev
-
-# 或
-yarn dev`}
-                stepHint="启动开发服务器后，按模板不同可访问对应地址（如 Next.js 默认 http://localhost:3000）。"
-                expectedOutput={`# 开发服务器启动，可开始开发与调试`}
+                code={T('dev_code')}
+                stepHint={T('dev_stepHint')}
+                expectedOutput={T('dev_expectedOutput')}
                 onRun={() => markComplete(taskStorageKey('dev'))}
               />
             </div>
@@ -300,16 +266,11 @@ yarn dev`}
           <div className={styles.embedCard}>
             <div className={styles.embedCardInner}>
               <CodeBlock
-                filename="可用模板"
+                filename={lang === 'zh' ? '可用模板' : 'Available templates'}
                 language="markdown"
-                code={`## 可用模板
-
-- **Next.js + seekdb**：构建现代化 Web 应用，支持 SSR 和 API 路由
-- **Electron + Next.js + seekdb**：跨平台桌面应用，集成向量搜索
-- **Express + seekdb**：使用 Express 构建 RESTful API 服务
-- **Fastify + seekdb**：使用 Fastify 构建高性能 API 服务`}
-                stepHint="按技术栈与部署形态选择；学院内另有 Next.js / Electron 模板单独课程可深入。"
-                expectedOutput={`# 说明文档，无执行输出`}
+                code={T('templates_code')}
+                stepHint={T('templates_stepHint')}
+                expectedOutput={`# ${t('codeBlock.docOnlyOutput')}`}
                 onRun={() => markComplete(taskStorageKey('templates'))}
               />
             </div>

@@ -20,7 +20,7 @@ const taskStorageKey = (id: TaskId) => `overview-${id}`
 
 export function OverviewPage() {
   const navigate = useNavigate()
-  const { lang } = useLanguage()
+  const { lang, t } = useLanguage()
   const { completedIds, markComplete } = useProgress()
   const { playConfetti } = useConfetti()
   const [selectedTask, setSelectedTask] = useState<TaskId>('quiz')
@@ -67,7 +67,6 @@ export function OverviewPage() {
     [completedIds]
   )
   const allTasksDone = OVERVIEW_TASK_IDS.every((id) => completedIds.has(taskStorageKey(id)))
-  const completed = completedIds.has('overview')
 
   const handleNextWithCelebration = useCallback(() => {
     const rect = nextButtonRef.current?.getBoundingClientRect()
@@ -311,7 +310,11 @@ VALUES
   (3, '深度学习入门', '深度学习使用多层神经网络处理复杂模式，广泛应用于图像和语音识别。', AI_EMBED('深度学习使用多层神经网络处理复杂模式。'));`}
                 expectedOutput={`Query OK, 2 rows affected
 
-# 现在 documents 表中共有 3 条数据，步骤 4 的搜索将返回更丰富的结果。`}
+# 现在 documents 表中共有 3 条数据，步骤 4 的搜索将返回更丰富的结果。${t('codeBlock.insertTableHint')}`}
+                expectedData={[
+                  { id: 2, title: '机器学习简介', content: '机器学习使计算机能够从数据中学习并做出预测，无需显式编程。', embedding: '[0.01, -0.02, ... 1536 dims]' },
+                  { id: 3, title: '深度学习入门', content: '深度学习使用多层神经网络处理复杂模式，广泛应用于图像和语音识别。', embedding: '[0.01, -0.02, ... 1536 dims]' },
+                ]}
                 onRun={() => markComplete(taskStorageKey('step3'))}
               />
             </div>

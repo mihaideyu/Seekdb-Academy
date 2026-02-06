@@ -86,7 +86,7 @@ export const lessons: LessonMeta[] = [
 ]
 
 /** 按章节分组的课程（用于侧边栏） */
-export function getLessonsBySection(): { sectionId: string; sectionOrder: number; lessons: LessonMeta[] }[] {
+export function getLessonsBySection(): { sectionId: string; section: string; sectionOrder: number; lessons: LessonMeta[] }[] {
   const bySection = new Map<string, LessonMeta[]>()
   for (const lesson of lessons) {
     const key = lesson.sectionId
@@ -101,6 +101,7 @@ export function getLessonsBySection(): { sectionId: string; sectionOrder: number
   return Array.from(bySection.entries())
     .map(([sectionId, lessonList]) => ({
       sectionId,
+      section: lessonList[0]?.section ?? sectionId,
       sectionOrder: sectionOrderMap.get(sectionId) ?? 0,
       lessons: lessonList,
     }))
@@ -125,14 +126,31 @@ export function getLessonByPath(path: string): LessonMeta | undefined {
   return lessons.find((l) => l.path === path)
 }
 
+/** 第一个专题的第一章节 path，用于默认进入页 */
+export function getFirstLessonPath(): string {
+  const first = lessons[0]
+  return first?.path ?? '/overview'
+}
+
 /** 课程全局序号（1-based），用于展示「第 N 课」 */
 export function getLessonGlobalIndex(id: string): number {
   const i = lessons.findIndex((l) => l.id === id)
   return i >= 0 ? i + 1 : 0
 }
 
+/** 仅统计已开发课程（fullContent），待开发课程不参与进度 */
 export function getProgress(completedIds: Set<string>): { current: number; total: number; percent: number } {
-  const total = lessons.length
-  const current = lessons.filter((l) => completedIds.has(l.id)).length
+  const developed = lessons.filter((l) => l.fullContent === true)
+  const total = developed.length
+  const current = developed.filter((l) => completedIds.has(l.id)).length
   return { current, total, percent: total ? Math.round((current / total) * 100) : 0 }
+}
+
+/** 按课程顺序返回第一个未完成且已开发内容的课时 id，用于「继续学习」跳转 */
+export function getFirstUnlearnedLessonId(completedIds: Set<string>): string | null {
+  for (const lesson of lessons) {
+    if (lesson.fullContent !== true) continue
+    if (!completedIds.has(lesson.id)) return lesson.id
+  }
+  return null
 }

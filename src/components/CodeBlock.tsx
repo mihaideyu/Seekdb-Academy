@@ -22,7 +22,6 @@ interface CodeBlockProps {
   onRun?: () => void
 }
 
-const DEFAULT_OUTPUT = 'Query OK (Demo 模拟结果)\n\n在实际 Playground 中会执行真实语句并返回结果。'
 
 function tryParseResultData(raw: string): Record<string, unknown>[] | null {
   const trimmed = raw.trim()
@@ -69,6 +68,7 @@ export function CodeBlock({
   onRun,
 }: CodeBlockProps) {
   const [result, setResult] = useState<string | null>(null)
+  const [apiResultData, setApiResultData] = useState<Record<string, unknown>[] | null>(null)
   const [running, setRunning] = useState(false)
   const [execTimeMs, setExecTimeMs] = useState<number | null>(null)
   const [viewMode, setViewMode] = useState<ResultViewMode>('raw')
@@ -87,28 +87,63 @@ export function CodeBlock({
   }, [hasEditable, editableValue])
   const codeBefore = hasEditable ? code.slice(0, code.indexOf(editableSnippet)) : code
   const codeAfter = hasEditable ? code.slice(code.indexOf(editableSnippet) + editableSnippet.length) : ''
-  const effectiveCode = hasEditable ? codeBefore + editableValue + codeAfter : code
 
   const resultData = useMemo(() => {
+    if (apiResultData) return apiResultData
     if (expectedData && expectedData.length > 0) return expectedData
     if (result) return tryParseResultData(result)
     return null
-  }, [result, expectedData])
+  }, [apiResultData, expectedData, result])
+
+  const { t } = useLanguage()
+  const defaultOutput = t('codeBlock.demoResult')
 
   const handleRun = () => {
     setRunning(true)
     setResult(null)
+    setApiResultData(null)
     setExecTimeMs(null)
     const start = Date.now()
-    setTimeout(() => {
-      setResult(expectedOutput ?? DEFAULT_OUTPUT)
+    const fullCode = codeBefore + (hasEditable ? editableValue : '') + codeAfter
+    const apiUrl = import.meta.env.VITE_EXECUTE_API_URL ?? '/api/execute'
+
+    const finishWithSimulated = () => {
+      setResult(expectedOutput ?? defaultOutput)
+      setApiResultData(null)
       setExecTimeMs(Math.max(1, Math.round(Date.now() - start)))
       setRunning(false)
       onRun?.()
-    }, 500)
+    }
+
+    if (language === 'sql' && fullCode.trim()) {
+      fetch(apiUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ language: 'sql', code: fullCode }),
+      })
+        .then((res) => res.json().then((data) => ({ ok: res.ok, status: res.status, data })))
+        .then(({ ok, status, data }) => {
+          const ms = Math.max(1, Math.round(Date.now() - start))
+          setExecTimeMs(ms)
+          if (ok && data?.success) {
+            setResult(data.output ?? '')
+            setApiResultData(Array.isArray(data.rows) ? data.rows : null)
+          } else {
+            const errMsg = data?.error ?? data?.output ?? (status === 503 ? 'Execution not configured.' : 'Request failed.')
+            setResult(errMsg)
+            setApiResultData(null)
+          }
+          setRunning(false)
+          onRun?.()
+        })
+        .catch(() => {
+          finishWithSimulated()
+        })
+    } else {
+      setTimeout(finishWithSimulated, 500)
+    }
   }
 
-  const { t } = useLanguage()
   const canTable = resultData != null && resultData.length > 0
   const canChart = canTable && getNumericColumnKeys(resultData).length > 0 && getLabelKey(resultData) != null
 
@@ -142,7 +177,7 @@ export function CodeBlock({
                   value={editableValue}
                   onChange={(e) => setEditableValue(e.target.value)}
                   spellCheck={false}
-                  aria-label="可编辑代码片段"
+                  aria-label={t('codeBlock.editableSnippetAria')}
                   style={{ width: inlayWidthPx }}
                 />
               </span>

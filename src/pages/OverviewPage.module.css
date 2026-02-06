@@ -111,6 +111,19 @@
   margin-bottom: 0;
 }
 
+/* 最后一步：从圆圈底部开始遮住竖线，避免步骤 5 下方多出一截线条 */
+.ragFlowStep:last-child::after {
+  content: '';
+  position: absolute;
+  left: 11px;
+  width: 6px;
+  top: 28px; /* 与 .ragFlowIcon 高度一致，从圆圈底部开始遮罩 */
+  height: calc(100% - 28px); /* 覆盖本步内容区，截断竖线 */
+  background: var(--bg-panel, var(--bg));
+  z-index: 1;
+  pointer-events: none;
+}
+
 .ragFlowIcon {
   flex-shrink: 0;
   width: 28px;

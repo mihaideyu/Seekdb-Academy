@@ -19,7 +19,7 @@ const TASK_IDS: TaskId[] = ['intro', 'create', 'run', 'structure', 'seekdb-confi
 const taskStorageKey = (id: TaskId) => `electron-nextjs-template-${id}`
 
 export function ElectronNextjsTemplatePage() {
-  const { lang } = useLanguage()
+  const { lang, t } = useLanguage()
   const T = useCallback(
     (key: keyof typeof electronNextjsTemplateTexts.zh, params?: Record<string, string | number>) =>
       getPageText(electronNextjsTemplateTexts, lang, key, params),
@@ -158,15 +158,9 @@ export function ElectronNextjsTemplatePage() {
               <CodeBlock
                 filename="README.md"
                 language="markdown"
-                code={`# Electron + Next.js + seekdb 模板
-
-- **Electron**：桌面应用壳，主进程管理窗口与系统集成。
-- **Next.js**：渲染进程中的 Web 应用，负责页面与路由。
-- **seekdb-js**：在 Node/渲染进程中连接 SeekDB，实现向量与语义搜索。
-
-适用场景：需要打包成桌面客户端的 AI 应用（如本地知识库、离线检索工具）。`}
-                stepHint="模板将三者整合为一套可运行的脚手架，开箱即用。"
-                expectedOutput={`# 仅说明文档，无执行输出`}
+                code={T('intro_code')}
+                stepHint={T('intro_stepHint')}
+                expectedOutput={`# ${t('codeBlock.docOnlyOutput')}`}
                 onRun={() => markComplete(taskStorageKey('intro'))}
               />
             </div>
@@ -179,14 +173,9 @@ export function ElectronNextjsTemplatePage() {
               <CodeBlock
                 filename="terminal"
                 language="bash"
-                code={`# 使用 create-seekdb-app 创建项目（推荐）
-npx create-seekdb-app@latest my-electron-seekdb --template electron-nextjs
-
-# 或从官方模板仓库克隆
-# git clone https://github.com/seekdb/electron-nextjs-seekdb-template.git my-app
-# cd my-app`}
-                stepHint="执行后会在当前目录生成 my-electron-seekdb（或你指定的目录），内含 Electron + Next.js + seekdb 配置。"
-                expectedOutput={`# 创建完成后进入目录: cd my-electron-seekdb`}
+                code={T('create_code')}
+                stepHint={T('create_stepHint')}
+                expectedOutput={T('create_expectedOutput')}
                 onRun={() => markComplete(taskStorageKey('create'))}
               />
             </div>
@@ -199,15 +188,9 @@ npx create-seekdb-app@latest my-electron-seekdb --template electron-nextjs
               <CodeBlock
                 filename="package.json (scripts)"
                 language="json"
-                code={`{
-  "scripts": {
-    "dev": "concurrently \"next dev\" \"wait-on http://localhost:3000 && electron .\"",
-    "build": "next build && electron-builder",
-    "start": "next start"
-  }
-}`}
-                stepHint="dev 会先启动 Next.js，再启动 Electron 并加载本地页面；本地请在该模板项目中执行 pnpm install && pnpm dev。"
-                expectedOutput={`# 终端中 Next 与 Electron 启动后，会弹出桌面窗口并打开应用`}
+                code={T('run_code')}
+                stepHint={T('run_stepHint')}
+                expectedOutput={T('run_expectedOutput')}
                 onRun={() => markComplete(taskStorageKey('run'))}
               />
             </div>
@@ -218,19 +201,11 @@ npx create-seekdb-app@latest my-electron-seekdb --template electron-nextjs
           <div className={styles.embedCard}>
             <div className={styles.embedCardInner}>
               <CodeBlock
-                filename="项目结构示意"
+                filename={lang === 'zh' ? '项目结构示意' : 'Project structure'}
                 language="text"
-                code={`my-electron-seekdb/
-├── main/           # Electron 主进程（创建窗口、加载 URL）
-├── preload/         # 预加载脚本（安全桥接 main 与 renderer）
-├── src/             # Next.js 应用
-│   ├── app/         # App Router 页面
-│   ├── lib/         # 可放 seekdb 客户端封装
-│   └── ...
-├── package.json
-└── next.config.js`}
-                stepHint="seekdb-js 可在 Next.js 的 Server Component、API Route 或通过 preload 暴露给渲染进程使用。"
-                expectedOutput={`# 了解结构后，在 lib 或 API 中接入 SeekdbClient 即可`}
+                code={T('structure_code')}
+                stepHint={T('structure_stepHint')}
+                expectedOutput={T('structure_expectedOutput')}
                 onRun={() => markComplete(taskStorageKey('structure'))}
               />
             </div>
@@ -243,24 +218,9 @@ npx create-seekdb-app@latest my-electron-seekdb --template electron-nextjs
               <CodeBlock
                 filename="src/lib/seekdb.ts"
                 language="typescript"
-                code={`import { SeekdbClient } from "seekdb";
-
-// 从环境变量读取，便于区分开发/生产
-const client = new SeekdbClient({
-  host: process.env.SEEKDB_HOST ?? "127.0.0.1",
-  port: Number(process.env.SEEKDB_PORT) || 2881,
-  user: process.env.SEEKDB_USER ?? "root",
-  password: process.env.SEEKDB_PASSWORD ?? "",
-  database: process.env.SEEKDB_DATABASE ?? "test",
-});
-
-export async function getCollection(name: string) {
-  return client.getOrCreateCollection(name);
-}
-
-export { client };`}
-                stepHint="在 Next.js API Route 或 Server Action 中调用 getCollection/createCollection/query，避免在浏览器中暴露连接信息。"
-                expectedOutput={`# 封装后可在页面或 API 中 import { client, getCollection } from '@/lib/seekdb'`}
+                code={T('seekdb_config_code')}
+                stepHint={T('seekdb_config_stepHint')}
+                expectedOutput={T('seekdb_config_expectedOutput')}
                 onRun={() => markComplete(taskStorageKey('seekdb-config'))}
               />
             </div>

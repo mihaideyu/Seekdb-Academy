@@ -22,7 +22,7 @@ const taskStorageKey = (id: TaskId) => `ai-workflow-${id}`
 
 export function AiWorkflowPage() {
   const navigate = useNavigate()
-  const { lang } = useLanguage()
+  const { lang, t } = useLanguage()
   const { completedIds, markComplete } = useProgress()
   const { playConfetti } = useConfetti()
   const nextButtonRef = useRef<HTMLButtonElement>(null)
@@ -260,7 +260,12 @@ VALUES
                 editableSnippet="'SeekDB 简介'"
                 expectedOutput={`Query OK, 3 rows affected
 
-# 已插入 3 条文档，embedding 由 AI_EMBED 自动生成。`}
+# 已插入 3 条文档，embedding 由 AI_EMBED 自动生成。${t('codeBlock.insertTableHint')}`}
+                expectedData={[
+                  { id: 1, title: 'SeekDB 简介', content: 'SeekDB 是 AI 原生数据库，支持向量搜索和语义搜索。', embedding: '[0.01, -0.02, ... 1536 dims]' },
+                  { id: 2, title: '向量搜索', content: '向量搜索基于余弦相似度或 L2 距离，需先对文本做嵌入。', embedding: '[0.01, -0.02, ... 1536 dims]' },
+                  { id: 3, title: 'RAG 流程', content: 'RAG 即检索增强生成：先检索相关文档，再交给 LLM 生成答案。', embedding: '[0.01, -0.02, ... 1536 dims]' },
+                ]}
                 onRun={() => markComplete(taskStorageKey('step2'))}
               />
             </div>

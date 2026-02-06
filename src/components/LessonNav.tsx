@@ -14,7 +14,7 @@ interface LessonNavProps {
   nextButtonRef?: React.RefObject<HTMLButtonElement | null>
 }
 
-export function LessonNav({ prevId, nextId, onMarkComplete, completed, onNextClick, nextButtonRef }: LessonNavProps) {
+export function LessonNav({ prevId, nextId, onMarkComplete: _onMarkComplete, completed, onNextClick, nextButtonRef }: LessonNavProps) {
   const { lang, t } = useLanguage()
   const prev = prevId ? getLesson(prevId) : null
   const next = nextId ? getLesson(nextId) : null
@@ -35,7 +35,7 @@ export function LessonNav({ prevId, nextId, onMarkComplete, completed, onNextCli
             onNextClick ? (
               <button
                 type="button"
-                ref={nextButtonRef}
+                ref={nextButtonRef as React.RefObject<HTMLButtonElement>}
                 className={styles.primaryLink}
                 onClick={onNextClick}
               >

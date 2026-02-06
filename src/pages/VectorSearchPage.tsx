@@ -21,7 +21,7 @@ const taskStorageKey = (id: TaskId) => `vector-search-${id}`
 
 export function VectorSearchPage() {
   const navigate = useNavigate()
-  const { lang } = useLanguage()
+  const { lang, t } = useLanguage()
   const { completedIds, markComplete } = useProgress()
   const { playConfetti } = useConfetti()
   const nextButtonRef = useRef<HTMLButtonElement>(null)
@@ -201,8 +201,8 @@ CREATE TABLE articles (
 -- 创建向量索引以加速搜索（HNSW 为近似最近邻索引）
 CREATE INDEX idx_embedding ON articles
 USING HNSW (embedding) WITH (M=16, ef_construction=200);`}
-                stepHint="第一步：执行后得到 articles 表及 HNSW 索引，后续步骤将向表中插入数据。"
-                tryIt="了解参数：M 控制每节点邻居数，ef_construction 影响建索引时的搜索范围，生产环境可按文档调优。"
+                stepHint={T('step1_stepHint')}
+                tryIt={T('step1_tryIt')}
                 editableSnippet="M=16"
                 expectedOutput={`Query OK, 0 rows affected
 Query OK, 0 rows affected
@@ -225,12 +225,17 @@ VALUES
   ('深度学习入门', '深度学习是机器学习的一个分支，使用多层神经网络学习数据表示。', AI_EMBED('深度学习是机器学习的一个分支，使用多层神经网络学习数据表示。')),
   ('自然语言处理简介', 'NLP 是人工智能的重要领域，研究如何让计算机理解和生成人类语言。', AI_EMBED('NLP 是人工智能的重要领域，研究如何让计算机理解和生成人类语言。')),
   ('计算机视觉应用', 'CV 技术广泛应用于图像识别、目标检测和图像分割等任务。', AI_EMBED('CV 技术广泛应用于图像识别、目标检测和图像分割等任务。'));`}
-                stepHint="第二步：依赖步骤 1 的 articles 表。插入后即可在步骤 3 中做向量搜索。"
-                tryIt="增加一条你自己写的 title 和 content，再在下一步用不同问句搜索，观察排序结果。"
+                stepHint={T('step2_stepHint')}
+                tryIt={T('step2_tryIt')}
                 editableSnippet="'深度学习入门'"
                 expectedOutput={`Query OK, 3 rows affected
 
-# 已插入 3 条文档，embedding 由 AI_EMBED 自动生成。`}
+# 已插入 3 条文档，embedding 由 AI_EMBED 自动生成。${t('codeBlock.insertTableHint')}`}
+                expectedData={[
+                  { id: 1, title: '深度学习入门', content: '深度学习是机器学习的一个分支，使用多层神经网络学习数据表示。', embedding: '[0.01, -0.02, ... 1536 dims]' },
+                  { id: 2, title: '自然语言处理简介', content: 'NLP 是人工智能的重要领域，研究如何让计算机理解和生成人类语言。', embedding: '[0.01, -0.02, ... 1536 dims]' },
+                  { id: 3, title: '计算机视觉应用', content: 'CV 技术广泛应用于图像识别、目标检测和图像分割等任务。', embedding: '[0.01, -0.02, ... 1536 dims]' },
+                ]}
                 onRun={() => markComplete(taskStorageKey('step2'))}
               />
             </div>
@@ -248,8 +253,8 @@ SELECT id, title,
 FROM articles
 ORDER BY distance ASC
 LIMIT 5;`}
-                stepHint="第三步：依赖步骤 2 已插入的数据。distance 越小表示越相似。"
-                tryIt="改用 L2_DISTANCE 或 INNER_PRODUCT 对比同一查询的结果排序（注意排序方向：L2/余弦用 ASC，内积用 DESC）。"
+                stepHint={T('step3_stepHint')}
+                tryIt={T('step3_tryIt')}
                 editableSnippet="'如何学习人工智能'"
                 expectedOutput={`+----+---------------------+----------+
 | id | title               | distance |

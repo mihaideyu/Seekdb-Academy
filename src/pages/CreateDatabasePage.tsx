@@ -20,7 +20,7 @@ const taskStorageKey = (id: TaskId) => `create-database-${id}`
 
 export function CreateDatabasePage() {
   const navigate = useNavigate()
-  const { lang } = useLanguage()
+  const { lang, t } = useLanguage()
   const { completedIds, markComplete } = useProgress()
   const { playConfetti } = useConfetti()
   const nextButtonRef = useRef<HTMLButtonElement>(null)
@@ -164,8 +164,8 @@ export function CreateDatabasePage() {
 - 数据库是组织数据的**顶层容器**
 - 其下包含：表、索引、视图等数据库对象
 - 创建库后需 USE 切换当前库，再创建表、写入数据`}
-                stepHint="SeekDB 兼容 MySQL 语法，CREATE DATABASE / USE 等与 MySQL 一致。"
-                expectedOutput={`# 说明文档，无执行输出`}
+                stepHint={T('intro_stepHint')}
+                expectedOutput={`# ${t('codeBlock.docOnlyOutput')}`}
                 onRun={() => markComplete(taskStorageKey('intro'))}
               />
             </div>
@@ -188,7 +188,7 @@ CREATE DATABASE IF NOT EXISTS my_ai_app;
 CREATE DATABASE my_ai_app
     CHARACTER SET utf8mb4
     COLLATE utf8mb4_unicode_ci;`}
-                stepHint="IF NOT EXISTS 适合脚本重复执行；utf8mb4 支持完整 Unicode（含 emoji）。"
+                stepHint={T('create_stepHint')}
                 expectedOutput={`Query OK, 1 row affected (或 0 rows 若已存在)
 # 创建成功后可用 USE my_ai_app 切换`}
                 onRun={() => markComplete(taskStorageKey('create'))}
@@ -214,7 +214,7 @@ SELECT DATABASE();
 
 -- 查看数据库定义
 SHOW CREATE DATABASE my_ai_app;`}
-                stepHint="执行建表、插入等操作前需先 USE 到目标库。"
+                stepHint={T('manage_stepHint')}
                 expectedOutput={`# SHOW DATABASES 列出库名
 # SELECT DATABASE() 返回当前库名
 # SHOW CREATE DATABASE 返回创建语句`}
@@ -235,7 +235,7 @@ DROP DATABASE my_ai_app;
 
 -- 删除数据库（如果存在）
 DROP DATABASE IF EXISTS my_ai_app;`}
-                stepHint="生产环境执行前请确保已备份重要数据；本示例仅作语法参考。"
+                stepHint={T('drop_stepHint')}
                 expectedOutput={`Query OK, 0 rows affected
 # 库及其内所有对象被删除`}
                 onRun={() => markComplete(taskStorageKey('drop'))}
@@ -260,8 +260,8 @@ DROP DATABASE IF EXISTS my_ai_app;`}
 ## 环境隔离
 
 为开发、测试和生产环境创建独立数据库，便于隔离与回滚。`}
-                stepHint="规范命名便于团队协作与运维。"
-                expectedOutput={`# 说明文档，无执行输出`}
+                stepHint={T('naming_stepHint')}
+                expectedOutput={`# ${t('codeBlock.docOnlyOutput')}`}
                 onRun={() => markComplete(taskStorageKey('naming'))}
               />
             </div>

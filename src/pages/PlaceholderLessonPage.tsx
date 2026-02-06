@@ -1,5 +1,6 @@
 import { useLocation, Navigate } from 'react-router-dom'
 import { getLessonByPath } from '@/curriculum'
+import { useLanguage } from '@/context/LanguageContext'
 import styles from './PlaceholderLessonPage.module.css'
 
 /** 待开发占位插图：施工栏 + 灯 */
@@ -30,17 +31,18 @@ function UnderDevelopmentIcon() {
   )
 }
 
-const PLACEHOLDER_TOPICS = [
-  '核心概念与原理',
-  '实操步骤与示例代码',
-  '最佳实践与常见问题',
-]
+const PLACEHOLDER_TOPIC_KEYS = ['placeholder.topic1', 'placeholder.topic2', 'placeholder.topic3'] as const
 
 export function PlaceholderLessonPage() {
   const { pathname } = useLocation()
+  const { t, lang } = useLanguage()
   const lesson = getLessonByPath(pathname)
 
-  if (!lesson) return <Navigate to="/" replace />
+  if (!lesson) return <Navigate to="/home" replace />
+
+  const courseUrl = lang === 'zh'
+    ? 'https://seekdb-playground.vercel.app/zh/overview'
+    : 'https://seekdb-playground.vercel.app/en/overview'
 
   return (
     <article className={styles.root}>
@@ -48,26 +50,24 @@ export function PlaceholderLessonPage() {
         <UnderDevelopmentIcon />
       </div>
 
-      <h1 className={styles.placeholderTitle}>课程内容开发中</h1>
-      <p className={styles.placeholderDesc}>
-        这个课程模块正在紧张制作中，我们将尽快为您呈现高质量的交互式学习内容。
-      </p>
+      <h1 className={styles.placeholderTitle}>{t('placeholder.title')}</h1>
+      <p className={styles.placeholderDesc}>{t('placeholder.desc')}</p>
 
       <div className={styles.topicsBox}>
-        <h2 className={styles.topicsTitle}>即将涵盖的主题：</h2>
+        <h2 className={styles.topicsTitle}>{t('placeholder.topicsTitle')}</h2>
         <ul className={styles.topicsList}>
-          {PLACEHOLDER_TOPICS.map((topic, i) => (
-            <li key={i}>{topic}</li>
+          {PLACEHOLDER_TOPIC_KEYS.map((key, i) => (
+            <li key={i}>{t(key)}</li>
           ))}
         </ul>
       </div>
 
       <p className={styles.footerLink}>
-        完整内容与交互式代码可参考{' '}
-        <a href="https://seekdb-playground.vercel.app/zh/overview" target="_blank" rel="noopener noreferrer">
-          官方 SeekDB 交互式课程
+        {t('placeholder.footerIntro')}{' '}
+        <a href={courseUrl} target="_blank" rel="noopener noreferrer">
+          {t('placeholder.footerLink')}
         </a>
-        。
+        {t('placeholder.footerEnd')}
       </p>
     </article>
   )

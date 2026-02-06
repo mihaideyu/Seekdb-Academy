@@ -31,6 +31,27 @@ npm run dev
 
 浏览器打开 `http://localhost:5173`。
 
+### 教程内 SQL 真实执行（可选）
+
+本地 `npm run dev` 下代码块点击「运行」为**模拟结果**。若需在教程中**真实执行 SQL** 并展示结果：
+
+1. **部署到 Vercel** 后，在项目环境变量中配置：
+   - `DATABASE_URL` 或 `SEEKDB_DEMO_URL`：MySQL/SeekDB 连接串，格式 `mysql://user:password@host:port/database`
+2. 前端默认请求同源 `/api/execute`；若执行接口在其他域名，可配置：
+   - `VITE_EXECUTE_API_URL`：执行 API 的完整 URL（构建时注入）
+3. 本地想联调真实执行时，可运行 `vercel dev`，并同样在 Vercel 项目或 `.env.local` 中配置上述变量。
+
+**安全建议**：使用只读或仅含教程所需库/表的账号；生产环境建议对 `/api/execute` 做限流或 IP 白名单。
+
+### Ask AI（基于官网文档问答）
+
+顶栏「Ask AI」会基于 [SeekDB 官网文档](https://www.oceanbase.ai/docs/zh-CN/changelog/) 内容回答用户问题。部署到 Vercel 后，在环境变量中配置 **DEEPSEEK_API_KEY** 即可启用：接口会拉取文档页文本作为上下文，调用 DeepSeek（deepseek-chat）生成回答。未配置时面板会提示并引导用户查阅官方文档。
+
+**本地开发时使用 Ask AI**（避免出现「网络错误」）任选其一即可：
+
+- **方式一**：在项目根目录执行 `vercel dev`（需先 `npm i -g vercel` 并登录），在 `.env.local` 中配置 `DEEPSEEK_API_KEY`，本地会运行 Vercel Serverless，Ask AI 即可用。
+- **方式二**：若项目已部署到 Vercel 且已配置 DEEPSEEK_API_KEY，可在本地创建 `.env` 或 `.env.local`，设置 `ASK_AI_PROXY_TARGET=https://你的部署域名.vercel.app`，再执行 `npm run dev`，前端请求的 `/api` 会被代理到该域名，Ask AI 即可用。
+
 **推荐体验路径**：**首页**（环境说明 + 推荐路径）→ **概述**（环境说明、本节目标、4 步代码+预期结果、2 题测验、推荐下一步）→ **连接方式概览**（本节目标、Python/Node 示例+预期结果、2 题测验、推荐下一步）→ **向量搜索**（本节目标、3 步建表/插入/搜索+预期结果、2 题测验、推荐下一步）。可完整体验进度、标记完成、多题测验与下一步引导。
 
 ## 技术栈

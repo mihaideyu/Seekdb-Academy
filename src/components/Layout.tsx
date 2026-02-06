@@ -12,7 +12,7 @@ import styles from './Layout.module.css'
 
 export function Layout({ children }: { children: React.ReactNode }) {
   const location = useLocation()
-  const { progress, completedIds } = useProgress()
+  const { progress, completedIds, setLastVisitedLessonId } = useProgress()
   const { pieces: confettiPieces } = useConfetti()
   const { isExpanded, toggleSection, expandSection, sidebarOpen, toggleSidebarOpen } = useSidebar()
   const { lang, setLang, t } = useLanguage()
@@ -22,11 +22,17 @@ export function Layout({ children }: { children: React.ReactNode }) {
   const langDropdownRef = useRef<HTMLDivElement>(null)
   const current = getLessonByPath(location.pathname)
   const sections = getLessonsBySection()
+  const isHomePage = location.pathname === '/home'
 
   // 当前页所在专题自动展开
   useEffect(() => {
     if (current?.sectionId) expandSection(current.sectionId)
   }, [current?.sectionId, expandSection])
+
+  // 记录最近学习的课时（用于首页「最近学习」）
+  useEffect(() => {
+    if (current?.id) setLastVisitedLessonId(current.id)
+  }, [current?.id, setLastVisitedLessonId])
 
   // 点击外部关闭语言下拉
   useEffect(() => {
@@ -43,25 +49,27 @@ export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div className={styles.app}>
       <header className={styles.topNav}>
-        <button
-          type="button"
-          className={styles.topNavMenu}
-          onClick={toggleSidebarOpen}
-          aria-label={sidebarOpen ? t('layout.menuClose') : t('layout.menu')}
-          aria-expanded={sidebarOpen}
-        >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M3 6h18M3 12h18M3 18h18" />
-          </svg>
-        </button>
-        <Link to="/" className={styles.topNavLogo}>
+        {!isHomePage && (
+          <button
+            type="button"
+            className={styles.topNavMenu}
+            onClick={toggleSidebarOpen}
+            aria-label={sidebarOpen ? t('layout.menuClose') : t('layout.menu')}
+            aria-expanded={sidebarOpen}
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M3 6h18M3 12h18M3 18h18" />
+            </svg>
+          </button>
+        )}
+        <Link to="/home" className={styles.topNavLogo}>
           {t('app.title')}
         </Link>
         {current && (
           <>
             <span className={styles.topNavDivider} aria-hidden />
             <nav className={styles.topNavBreadcrumb} aria-label="Breadcrumb">
-            <Link to="/">{t('nav.home')}</Link>
+            <Link to="/home">{t('nav.home')}</Link>
             <span className={styles.breadcrumbSep}>/</span>
             <span>{current && getSectionTitle(current.sectionId, lang)}</span>
             <span className={styles.breadcrumbSep}>/</span>
@@ -137,14 +145,15 @@ export function Layout({ children }: { children: React.ReactNode }) {
           </a>
         </div>
       </header>
-      <div className={`${styles.wrapper} ${!sidebarOpen ? styles.sidebarCollapsed : ''}`}>
-        <aside className={styles.sidebar} aria-hidden={!sidebarOpen}>
+      <div className={`${styles.wrapper} ${!sidebarOpen ? styles.sidebarCollapsed : ''} ${isHomePage ? styles.wrapperHome : ''}`}>
+        <aside className={styles.sidebar} aria-hidden={!sidebarOpen || isHomePage}>
           <div className={styles.sidebarNavScroll}>
             <nav className={styles.nav} aria-label="课程目录">
               {sections.map(({ sectionId, lessons: sectionLessons }) => {
                 const sectionTitle = getSectionTitle(sectionId, lang)
                 const expanded = isExpanded(sectionId)
-                const allCompleted = sectionLessons.length > 0 && sectionLessons.every((l) => completedIds.has(l.id))
+                const developedInSection = sectionLessons.filter((l) => l.fullContent === true)
+                const allCompleted = developedInSection.length > 0 && developedInSection.every((l) => completedIds.has(l.id))
                 return (
                   <div key={sectionId} className={styles.section}>
                     <button
@@ -183,7 +192,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
                 >
                   {sectionLessons.map((lesson) => {
                     const isActive = location.pathname === lesson.path
-                    const done = completedIds.has(lesson.id)
+                    const done = lesson.fullContent === true && completedIds.has(lesson.id)
                     return (
                       <Link
                         key={lesson.id}

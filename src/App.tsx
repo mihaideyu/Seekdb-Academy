@@ -1,6 +1,6 @@
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom'
+import { getFirstLessonPath } from '@/curriculum'
 import { Layout } from '@/components/Layout'
-import { OnboardingBanner } from '@/components/OnboardingBanner'
 import { HomePage } from '@/pages/HomePage'
 import { OverviewPage } from '@/pages/OverviewPage'
 import { ConnectOverviewPage } from '@/pages/ConnectOverviewPage'
@@ -19,10 +19,10 @@ import { PlaceholderLessonPage } from '@/pages/PlaceholderLessonPage'
 export default function App() {
   return (
     <>
-      <OnboardingBanner />
       <Layout>
         <Routes>
-          <Route path="/" element={<HomePage />} />
+          <Route path="/" element={<Navigate to={getFirstLessonPath()} replace />} />
+          <Route path="/home" element={<HomePage />} />
           <Route path="/overview" element={<OverviewPage />} />
           <Route path="/connect-overview" element={<ConnectOverviewPage />} />
           <Route path="/ai-workflow" element={<AiWorkflowPage />} />

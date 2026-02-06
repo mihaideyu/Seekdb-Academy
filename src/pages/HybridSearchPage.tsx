@@ -7,7 +7,6 @@ import { generateConfettiPieces } from '@/utils/confetti'
 import { CodeBlock } from '@/components/CodeBlock'
 import { QuizSet } from '@/components/Quiz'
 import { LessonNav } from '@/components/LessonNav'
-import { Term } from '@/components/Term'
 import { getLesson, getLessonGlobalIndex } from '@/curriculum'
 import { getPageText, hybridSearchTexts } from '@/i18n/pages'
 import styles from './OverviewPage.module.css'
@@ -21,7 +20,7 @@ const taskStorageKey = (id: TaskId) => `hybrid-search-${id}`
 
 export function HybridSearchPage() {
   const navigate = useNavigate()
-  const { lang } = useLanguage()
+  const { lang, t } = useLanguage()
   const { completedIds, markComplete } = useProgress()
   const { playConfetti } = useConfetti()
   const nextButtonRef = useRef<HTMLButtonElement>(null)
@@ -179,8 +178,8 @@ export function HybridSearchPage() {
 
 ## 混合搜索的优势
 结合两者：既能理解「手机卡顿」和「手机运行慢」相似（语义），又能精确匹配「iPhone 15」（关键词）。`}
-                stepHint="混合搜索 = 向量搜索 + 全文搜索，兼顾语义与关键词。"
-                expectedOutput="# 说明文档，无执行输出"
+                stepHint={T('taskWhy_stepHint')}
+                expectedOutput={`# ${t('codeBlock.docOnlyOutput')}`}
                 onRun={() => markComplete(taskStorageKey('why'))}
               />
             </div>
@@ -205,8 +204,8 @@ CREATE TABLE products (
 -- 创建向量索引
 CREATE INDEX vec_idx ON products
 USING HNSW (embedding);`}
-                stepHint="第一步：表内既有 FULLTEXT 索引（name, description），又有 HNSW 向量索引，才能做混合搜索。"
-                tryIt="可增加一列 price DECIMAL(10,2)，或调整 FULLTEXT 覆盖的列。"
+                stepHint={T('taskCreate_stepHint')}
+                tryIt={T('taskCreate_tryIt')}
                 expectedOutput={`Query OK, 0 rows affected
 Query OK, 0 rows affected
 
@@ -236,11 +235,16 @@ VALUES
      '专业级笔记本电脑，M3 Max 芯片',
      '电脑',
      AI_EMBED('专业级笔记本电脑，M3 Max 芯片'));`}
-                stepHint="第二步：依赖上一步的 products 表。插入后即可在下一步做混合搜索。"
-                tryIt="再插入几条产品，用不同 category，便于测试全文与向量组合效果。"
+                stepHint={T('taskInsert_stepHint')}
+                tryIt={T('taskInsert_tryIt')}
                 expectedOutput={`Query OK, 3 rows affected
 
-# 已插入 3 条产品，embedding 由 AI_EMBED 生成。`}
+# 已插入 3 条产品，embedding 由 AI_EMBED 生成。${t('codeBlock.insertTableHint')}`}
+                expectedData={[
+                  { id: 1, name: 'iPhone 15 Pro Max', description: '苹果最新旗舰手机，搭载 A17 Pro 芯片', category: '手机', embedding: '[0.01, -0.02, ... 1536 dims]' },
+                  { id: 2, name: '华为 Mate 60 Pro', description: '华为新一代商务旗舰，卫星通讯', category: '手机', embedding: '[0.01, -0.02, ... 1536 dims]' },
+                  { id: 3, name: 'MacBook Pro 16', description: '专业级笔记本电脑，M3 Max 芯片', category: '电脑', embedding: '[0.01, -0.02, ... 1536 dims]' },
+                ]}
                 onRun={() => markComplete(taskStorageKey('insert'))}
               />
             </div>
@@ -271,8 +275,8 @@ FROM vector_results v
 LEFT JOIN text_results t ON v.id = t.id
 ORDER BY hybrid_score DESC
 LIMIT 10;`}
-                stepHint="第三步：依赖上一步已插入的数据。向量得分用 (1 - 余弦距离) 转为相似度，再与全文得分加权。"
-                tryIt="调整 0.6/0.4 权重，或改用 MATCH(...) AGAINST 不同关键词，观察排序变化。"
+                stepHint={T('taskQuery_stepHint')}
+                tryIt={T('taskQuery_tryIt')}
                 expectedOutput={`# 返回 id、name、hybrid_score，按 hybrid_score 降序，兼顾「高性能手机」语义与「iPhone Pro」关键词。`}
                 onRun={() => markComplete(taskStorageKey('hybrid-query'))}
               />
@@ -291,8 +295,8 @@ LIMIT 10;`}
 | 加权融合 | 简单直观，易调优 | 需手动调权重   | 已知偏好场景 |
 | RRF 融合 | 无需调参，稳定 | 对得分差异不敏感 | 通用搜索场景 |
 | Rerank   | 效果最佳       | 需额外模型，延迟高 | 高精度场景   |`}
-                stepHint="RRF 基于排名融合，不依赖得分量纲；Rerank 需调用重排模型，延迟更高。"
-                expectedOutput="# 说明文档，无执行输出"
+                stepHint={T('taskStrategy_stepHint')}
+                expectedOutput={`# ${t('codeBlock.docOnlyOutput')}`}
                 onRun={() => markComplete(taskStorageKey('strategy'))}
               />
             </div>
@@ -314,8 +318,8 @@ LIMIT 10;`}
 - 先用向量搜索召回候选集（如 Top 100）
 - 再用全文搜索在候选集内精排
 - 最终返回 Top K`}
-                stepHint="先召回再精排可控制计算量；权重可根据业务 A/B 测试调优。"
-                expectedOutput="# 说明文档，无执行输出"
+                stepHint={T('taskBest_stepHint')}
+                expectedOutput={`# ${t('codeBlock.docOnlyOutput')}`}
                 onRun={() => markComplete(taskStorageKey('best-practice'))}
               />
             </div>

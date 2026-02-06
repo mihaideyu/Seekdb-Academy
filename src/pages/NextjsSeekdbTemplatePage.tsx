@@ -19,7 +19,7 @@ const TASK_IDS: TaskId[] = ['intro', 'create', 'select-template', 'env', 'dev', 
 const taskStorageKey = (id: TaskId) => `nextjs-seekdb-template-${id}`
 
 export function NextjsSeekdbTemplatePage() {
-  const { lang } = useLanguage()
+  const { lang, t } = useLanguage()
   const T = useCallback(
     (key: keyof typeof nextjsSeekdbTemplateTexts.zh, params?: Record<string, string | number>) =>
       getPageText(nextjsSeekdbTemplateTexts, lang, key, params),
@@ -160,15 +160,9 @@ export function NextjsSeekdbTemplatePage() {
               <CodeBlock
                 filename="README.md"
                 language="markdown"
-                code={`# Next.js + seekdb 模板
-
-- **Next.js 14+**：App Router、Server Components、API Routes
-- **seekdb-js**：在服务端连接 SeekDB，实现向量搜索与数据操作
-- **TypeScript**：完整类型支持
-
-适用场景：需要服务端渲染或 API 的 Web 应用，结合向量/语义搜索。`}
-                stepHint="模板开箱即用，创建后配置环境变量即可连接 SeekDB。"
-                expectedOutput={`# 说明文档，无执行输出`}
+                code={T('intro_code')}
+                stepHint={T('intro_stepHint')}
+                expectedOutput={`# ${t('codeBlock.docOnlyOutput')}`}
                 onRun={() => markComplete(taskStorageKey('intro'))}
               />
             </div>
@@ -181,15 +175,9 @@ export function NextjsSeekdbTemplatePage() {
               <CodeBlock
                 filename="create-app.sh"
                 language="bash"
-                code={`npx create-seekdb-app@latest my-app
-
-# 或使用 pnpm
-pnpm create seekdb-app my-app
-
-# 或使用 yarn
-yarn create seekdb-app my-app`}
-                stepHint="将 my-app 替换为你的项目名称；工具会自动创建项目目录并安装依赖。"
-                expectedOutput={`# 创建完成后会进入交互式提示，选择模板`}
+                code={T('create_code')}
+                stepHint={T('create_stepHint')}
+                expectedOutput={T('create_expectedOutput')}
                 onRun={() => markComplete(taskStorageKey('create'))}
               />
             </div>
@@ -202,13 +190,9 @@ yarn create seekdb-app my-app`}
               <CodeBlock
                 filename="select-template.txt"
                 language="text"
-                code={`? Select a template: (Use arrow keys)
-❯ Next.js + seekdb
-  Electron + Next.js + seekdb
-  Express + seekdb
-  Fastify + seekdb`}
-                stepHint="在交互式提示中用方向键选择「Next.js + seekdb」后回车。"
-                expectedOutput={`# 选择后继续生成项目文件`}
+                code={T('select_template_code')}
+                stepHint={T('select_template_stepHint')}
+                expectedOutput={T('select_template_expectedOutput')}
                 onRun={() => markComplete(taskStorageKey('select-template'))}
               />
             </div>
@@ -221,14 +205,9 @@ yarn create seekdb-app my-app`}
               <CodeBlock
                 filename=".env.local"
                 language="bash"
-                code={`# .env.local
-SEEKDB_HOST=127.0.0.1
-SEEKDB_PORT=2881
-SEEKDB_USER=root
-SEEKDB_PASSWORD=
-SEEKDB_DATABASE=test`}
-                stepHint="在项目根目录创建 .env.local；请先安装并启动 seekdb 服务，再按实际修改连接参数。"
-                expectedOutput={`# 保存后应用会读取这些环境变量连接 SeekDB`}
+                code={T('env_code')}
+                stepHint={T('env_stepHint')}
+                expectedOutput={T('env_expectedOutput')}
                 onRun={() => markComplete(taskStorageKey('env'))}
               />
             </div>
@@ -241,11 +220,9 @@ SEEKDB_DATABASE=test`}
               <CodeBlock
                 filename="dev.sh"
                 language="bash"
-                code={`pnpm dev
-
-# 默认运行在 http://localhost:3000`}
-                stepHint="在项目目录执行；首次可先 pnpm install。"
-                expectedOutput={`# 开发服务器启动后，在浏览器打开 http://localhost:3000`}
+                code={T('dev_code')}
+                stepHint={T('dev_stepHint')}
+                expectedOutput={T('dev_expectedOutput')}
                 onRun={() => markComplete(taskStorageKey('dev'))}
               />
             </div>
@@ -258,30 +235,9 @@ SEEKDB_DATABASE=test`}
               <CodeBlock
                 filename="app/api/search/route.ts"
                 language="typescript"
-                code={`// app/api/search/route.ts
-import { SeekdbClient } from 'seekdb';
-
-const client = new SeekdbClient({
-  host: process.env.SEEKDB_HOST,
-  port: parseInt(process.env.SEEKDB_PORT || '2881'),
-  user: process.env.SEEKDB_USER,
-  password: process.env.SEEKDB_PASSWORD,
-  database: process.env.SEEKDB_DATABASE,
-});
-
-export async function POST(request: Request) {
-  const { query } = await request.json();
-
-  const collection = await client.getCollection('documents');
-  const results = await collection.query({
-    queryTexts: query,
-    nResults: 10,
-  });
-
-  return Response.json(results);
-}`}
-                stepHint="在 API Route 中从环境变量读取连接配置，接收 POST 请求后做语义搜索并返回 JSON。"
-                expectedOutput={`# 前端可 fetch('/api/search', { method: 'POST', body: JSON.stringify({ query: '...' }) }) 调用`}
+                code={T('api_route_code')}
+                stepHint={T('api_route_stepHint')}
+                expectedOutput={T('api_route_expectedOutput')}
                 onRun={() => markComplete(taskStorageKey('api-route'))}
               />
             </div>

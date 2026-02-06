@@ -2,8 +2,9 @@ import { useState, useRef, useEffect } from 'react'
 import { useLanguage } from '@/context/LanguageContext'
 import styles from './AskAIPanel.module.css'
 
-/** 接入真实 API 时可将 SeekDB 官方文档全文或摘要作为 RAG/system 上下文 */
-const DOCS_LINK = 'https://www.oceanbase.ai/docs/develop-overview'
+/** SeekDB 官网文档（产品动态等） */
+const DOCS_LINK = 'https://www.oceanbase.ai/docs/zh-CN/changelog/'
+const ASK_AI_API = '/api/ask-ai'
 
 interface Message {
   role: 'user' | 'assistant'
@@ -30,10 +31,21 @@ export function AskAIPanel({ onClose, embedded }: AskAIPanelProps) {
   ])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
+  const [contentOverflows, setContentOverflows] = useState(false)
   const listRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (listRef.current) listRef.current.scrollTop = listRef.current.scrollHeight
+  }, [messages])
+
+  useEffect(() => {
+    const el = listRef.current
+    if (!el) return
+    const check = () => setContentOverflows(el.scrollHeight > el.clientHeight)
+    check()
+    const ro = new ResizeObserver(check)
+    ro.observe(el)
+    return () => ro.disconnect()
   }, [messages])
 
   const handleSend = async () => {
@@ -42,18 +54,39 @@ export function AskAIPanel({ onClose, embedded }: AskAIPanelProps) {
     setInput('')
     setMessages((prev) => [...prev, { role: 'user', content: text }])
     setLoading(true)
+    const noBackendHint =
+      lang === 'zh'
+        ? `Ask AI 在本地开发时需要后端支持：请使用 \`vercel dev\` 并配置 DEEPSEEK_API_KEY，或部署到 Vercel 后再使用。你也可直接查阅 [SeekDB 官方文档](${DOCS_LINK})。`
+        : `Ask AI needs a backend in local dev: run \`vercel dev\` and set DEEPSEEK_API_KEY, or use it after deploying to Vercel. You can also see [SeekDB Docs](${DOCS_LINK}).`
+
     try {
-      // 模拟基于文档上下文的回答（实际可接入 LLM API，将 SEEKDB_DOCS_CONTEXT 作为 system/context）
-      await new Promise((r) => setTimeout(r, 800))
-      const docHint =
-        lang === 'zh'
-          ? '根据 SeekDB 文档：SeekDB 是 AI 原生数据库，基于 OceanBase，支持向量/语义/全文/混合搜索，支持 VECTOR 列与 AI_EMBED、HNSW 索引等。'
-          : 'Per SeekDB docs: SeekDB is an AI-native DB on OceanBase, with vector/semantic/full-text/hybrid search, VECTOR columns, AI_EMBED, and HNSW index.'
+      const res = await fetch(ASK_AI_API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question: text, lang }),
+      })
+      if (!res.ok && res.status === 404) {
+        setMessages((prev) => [...prev, { role: 'assistant', content: noBackendHint }])
+        return
+      }
+      let data: { answer?: string; error?: string; needConfig?: boolean }
+      try {
+        data = (await res.json()) as { answer?: string; error?: string; needConfig?: boolean }
+      } catch {
+        setMessages((prev) => [...prev, { role: 'assistant', content: noBackendHint }])
+        return
+      }
       const reply =
-        lang === 'zh'
-          ? `${docHint}\n\n你问的是：「${text}」。\n\n更多细节可查阅 [官方文档](${DOCS_LINK})。生产环境可将完整文档作为 RAG 上下文接入大模型，获得更精准解答。`
-          : `${docHint}\n\nYou asked: "${text}". See [SeekDB Docs](${DOCS_LINK}) for more. In production, feed the full docs as RAG context for accurate answers.`
+        data.answer ||
+        (data.needConfig
+          ? lang === 'zh'
+            ? 'Ask AI 未配置或暂时不可用。请部署时在 Vercel 环境变量中设置 DEEPSEEK_API_KEY。你也可直接查阅 [SeekDB 官方文档](https://www.oceanbase.ai/docs/zh-CN/changelog/)。'
+            : 'Ask AI is not configured. Set DEEPSEEK_API_KEY in Vercel environment variables when deploying. You can also see [SeekDB Docs](https://www.oceanbase.ai/docs/en/changelog/).'
+          : data.error ||
+            (lang === 'zh' ? '回答生成失败，请稍后重试。' : 'Failed to generate answer. Please try again later.'))
       setMessages((prev) => [...prev, { role: 'assistant', content: reply }])
+    } catch {
+      setMessages((prev) => [...prev, { role: 'assistant', content: noBackendHint }])
     } finally {
       setLoading(false)
     }
@@ -84,18 +117,12 @@ export function AskAIPanel({ onClose, embedded }: AskAIPanelProps) {
             </div>
           )}
         </div>
-        <div className={styles.footer}>
+        <div className={`${styles.footer} ${contentOverflows ? styles.footerShadow : ''}`}>
           <div className={styles.inputWrap}>
             <textarea
               className={styles.input}
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                  e.preventDefault()
-                  handleSend()
-                }
-              }}
               placeholder={placeholder}
               rows={2}
               aria-label={placeholder}
@@ -104,11 +131,11 @@ export function AskAIPanel({ onClose, embedded }: AskAIPanelProps) {
               type="button"
               className={styles.sendBtn}
               onClick={handleSend}
-              disabled={loading}
+              disabled={loading || !input.trim()}
               aria-label={sendAriaLabel}
               title={sendAriaLabel}
             >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                 <path d="M22 2L11 13" />
                 <path d="M22 2L15 22L11 13L2 9L22 2Z" />
               </svg>

@@ -169,7 +169,7 @@ pnpm add seekdb
 
 # 或
 yarn add seekdb`}
-                stepHint="本环境为演示；本地请在项目目录执行上述命令安装依赖。"
+                stepHint={T('install_stepHint')}
                 expectedOutput={`# 安装成功后会看到 added 1 package 等提示
 # 本地可运行: node -e "require('seekdb')" 验证`}
                 onRun={() => markComplete(taskStorageKey('install'))}
@@ -204,7 +204,7 @@ const client = new SeekdbClient({
 //   database: "test",
 //   tenant: "sys",
 // });`}
-                stepHint="SDK 会自动处理连接与重连；本地请将 host/port/password 改为实际 SeekDB 实例。"
+                stepHint={T('connect_stepHint')}
                 expectedOutput={`# 连接成功后可继续 createCollection、add、query 等操作`}
                 onRun={() => markComplete(taskStorageKey('connect'))}
               />
@@ -224,7 +224,7 @@ const collection = await client.createCollection({
 });
 
 console.log("集合创建成功:", collection.name);`}
-                stepHint="依赖上一步已连接的 client；Collection 用于存储文档及其向量。"
+                stepHint={T('createCollection_stepHint')}
                 expectedOutput={`集合创建成功: my_collection`}
                 onRun={() => markComplete(taskStorageKey('create-collection'))}
               />
@@ -247,7 +247,7 @@ await collection.add({
     { category: "db" },
   ],
 });`}
-                stepHint="SDK 会自动将 documents 转为向量；metadatas 用于存储额外字段便于过滤。"
+                stepHint={T('addData_stepHint')}
                 expectedOutput={`# 写入成功，无报错即可进行下一步 query`}
                 onRun={() => markComplete(taskStorageKey('add-data'))}
               />
@@ -268,7 +268,7 @@ const results = await collection.query({
 });
 
 console.log("搜索结果:", results);`}
-                stepHint="依赖已 add 的数据；queryTexts 会先向量化再与集合内向量做相似度检索。"
+                stepHint={T('query_stepHint')}
                 expectedOutput={`# 返回与 "Hello" 语义相近的文档列表
 # 结构包含 ids、documents、metadatas、distances 等`}
                 onRun={() => markComplete(taskStorageKey('query'))}
@@ -301,7 +301,7 @@ const databases = await adminClient.listDatabases();
 
 // 删除数据库
 await adminClient.deleteDatabase("new_database");`}
-                stepHint="SeekdbAdminClient 用于库级管理；日常 CRUD 使用 SeekdbClient + Collection。"
+                stepHint={T('admin_stepHint')}
                 expectedOutput={`# listDatabases 返回数据库名称列表
 # 创建/删除成功无报错`}
                 onRun={() => markComplete(taskStorageKey('admin'))}

@@ -7,7 +7,7 @@ interface SectionGoalProps {
   prerequisites?: string[]
 }
 
-export function SectionGoal({ goals, prerequisites }: SectionGoalProps) {
+export function SectionGoal({ goals, prerequisites: _prerequisites }: SectionGoalProps) {
   return (
     <div className={styles.wrapper} role="status">
       <h3 className={styles.heading}>本课目标</h3>

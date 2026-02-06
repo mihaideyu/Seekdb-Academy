@@ -20,7 +20,7 @@ const taskStorageKey = (id: TaskId) => `embedding-overview-${id}`
 
 export function EmbeddingOverviewPage() {
   const navigate = useNavigate()
-  const { lang } = useLanguage()
+  const { lang, t } = useLanguage()
   const { completedIds, markComplete } = useProgress()
   const { playConfetti } = useConfetti()
   const nextButtonRef = useRef<HTMLButtonElement>(null)
@@ -165,8 +165,8 @@ export function EmbeddingOverviewPage() {
 - 向量能**捕获语义**：语义相似的文本在向量空间中距离更近
 - 例如："手机没电了" 与 "手机电量不足" 关键词不同，但向量相近
 - 常见维度：384, 768, 1536, 3072（维度越高表达能力越强，成本也更高）`}
-                stepHint="传统关键词匹配无法理解语义，向量嵌入使搜索更智能。"
-                expectedOutput={`# 说明文档，无执行输出`}
+                stepHint={T('intro_stepHint')}
+                expectedOutput={`# ${t('codeBlock.docOnlyOutput')}`}
                 onRun={() => markComplete(taskStorageKey('intro'))}
               />
             </div>
@@ -191,8 +191,8 @@ export function EmbeddingOverviewPage() {
 
 ## 为什么需要向量嵌入？
 关键词匹配无法理解语义。向量嵌入能捕获语义相似性，使搜索更智能。`}
-                stepHint="存储与查询须使用同一嵌入模型，否则向量不可比。"
-                expectedOutput={`# 说明文档，无执行输出`}
+                stepHint={T('concepts_stepHint')}
+                expectedOutput={`# ${t('codeBlock.docOnlyOutput')}`}
                 onRun={() => markComplete(taskStorageKey('concepts'))}
               />
             </div>
@@ -219,7 +219,7 @@ VALUES (
 SELECT * FROM documents
 ORDER BY COSINE_DISTANCE(embedding, AI_EMBED('什么是深度学习'))
 LIMIT 5;`}
-                stepHint="seekdb 内置 AI_EMBED，自动调用已配置的嵌入模型；需先建好含 embedding 列的表。"
+                stepHint={T('aiEmbed_stepHint')}
                 expectedOutput={`# SELECT 返回一列 embedding（向量）；INSERT 写入一行；查询返回与问题最相似的前 5 条`}
                 onRun={() => markComplete(taskStorageKey('ai-embed'))}
               />
@@ -239,8 +239,8 @@ LIMIT 5;`}
 | text-embedding-3-large | 3072   | 最高精度       |
 | BGE-M3                 | 1024   | 开源，多语言   |
 | M3E-base               | 768    | 中文优化，轻量 |`}
-                stepHint="中文场景可选用 BGE-M3 或 M3E；通用场景可选 OpenAI text-embedding-3-small。"
-                expectedOutput={`# 说明文档，无执行输出`}
+                stepHint={T('models_stepHint')}
+                expectedOutput={`# ${t('codeBlock.docOnlyOutput')}`}
                 onRun={() => markComplete(taskStorageKey('models'))}
               />
             </div>
@@ -262,7 +262,7 @@ SELECT content, AI_EMBED(content)
 FROM source_data
 WHERE embedding IS NULL
 LIMIT 1000;   -- 分批处理，避免超时`}
-                stepHint="切换模型需重新生成所有已有向量；大批量时用 LIMIT 分批避免超时。"
+                stepHint={T('bestPractice_stepHint')}
                 expectedOutput={`# 批量 INSERT ... SELECT 可一次为多行生成 embedding`}
                 onRun={() => markComplete(taskStorageKey('best-practice'))}
               />

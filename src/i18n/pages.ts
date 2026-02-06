@@ -333,6 +333,12 @@ export const vectorSearchTexts: Record<Lang, Record<string, string>> = {
     ipOrder: 'DESC（越大越相似）',
     lessonLabel: '第 {{n}} 课',
     embedPlaceholder: '在左侧选择一项任务，此处将展示对应的代码或测试题',
+    step1_stepHint: '第一步：执行后得到 articles 表及 HNSW 索引，后续步骤将向表中插入数据。',
+    step1_tryIt: '了解参数：M 控制每节点邻居数，ef_construction 影响建索引时的搜索范围，生产环境可按文档调优。',
+    step2_stepHint: '第二步：依赖步骤 1 的 articles 表。插入后即可在步骤 3 中做向量搜索。',
+    step2_tryIt: '增加一条你自己写的 title 和 content，再在下一步用不同问句搜索，观察排序结果。',
+    step3_stepHint: '第三步：依赖步骤 2 已插入的数据。distance 越小表示越相似。',
+    step3_tryIt: '改用 L2_DISTANCE 或 INNER_PRODUCT 对比同一查询的结果排序（注意排序方向：L2/余弦用 ASC，内积用 DESC）。',
   },
   en: {
     h1: 'Vector search',
@@ -385,6 +391,12 @@ export const vectorSearchTexts: Record<Lang, Record<string, string>> = {
     ipOrder: 'DESC (higher = more similar)',
     lessonLabel: 'Lesson {{n}}',
     embedPlaceholder: 'Select a task on the left to see the code or quiz here.',
+    step1_stepHint: 'Step 1: After running, you get the articles table and HNSW index; the next steps will insert data.',
+    step1_tryIt: 'Parameters: M controls neighbors per node, ef_construction affects build-time search; tune per docs in production.',
+    step2_stepHint: 'Step 2: Depends on the articles table from step 1. After insert, run vector search in step 3.',
+    step2_tryIt: 'Add your own title and content, then run a different query in the next step and observe the order.',
+    step3_stepHint: 'Step 3: Depends on data inserted in step 2. Lower distance means more similar.',
+    step3_tryIt: 'Try L2_DISTANCE or INNER_PRODUCT and compare sort order (L2/cosine: ASC; inner product: DESC).',
   },
 }
 
@@ -442,6 +454,11 @@ export const embeddingOverviewTexts: Record<Lang, Record<string, string>> = {
     quizExplanation: '向量嵌入的核心是捕获语义：语义相似的文本在向量空间中距离更近；维度越高通常计算成本越高；不同模型生成的向量不可直接比较；多语言模型可处理中文等。',
     lessonLabel: '第 {{n}} 课',
     embedPlaceholder: '在左侧选择一项任务，此处将展示对应的代码或测试题',
+    intro_stepHint: '传统关键词匹配无法理解语义，向量嵌入使搜索更智能。',
+    concepts_stepHint: '存储与查询须使用同一嵌入模型，否则向量不可比。',
+    aiEmbed_stepHint: 'seekdb 内置 AI_EMBED，自动调用已配置的嵌入模型；需先建好含 embedding 列的表。',
+    models_stepHint: '中文场景可选用 BGE-M3 或 M3E；通用场景可选 OpenAI text-embedding-3-small。',
+    bestPractice_stepHint: '切换模型需重新生成所有已有向量；大批量时用 LIMIT 分批避免超时。',
   },
   en: {
     h1: 'Embedding overview',
@@ -473,6 +490,11 @@ export const embeddingOverviewTexts: Record<Lang, Record<string, string>> = {
     quizExplanation: 'Embeddings capture semantics: similar meaning → closer in vector space; higher dim often means higher cost; different models are not comparable.',
     lessonLabel: 'Lesson {{n}}',
     embedPlaceholder: 'Select a task on the left to see the code or quiz here.',
+    intro_stepHint: 'Keyword matching cannot capture semantics; vector embeddings make search smarter.',
+    concepts_stepHint: 'Use the same embedding model for storage and query, or vectors are not comparable.',
+    aiEmbed_stepHint: 'SeekDB has built-in AI_EMBED; ensure the table has an embedding column.',
+    models_stepHint: 'For Chinese, consider BGE-M3 or M3E; for general use, OpenAI text-embedding-3-small.',
+    bestPractice_stepHint: 'Switching models requires regenerating all vectors; use LIMIT for large batches to avoid timeouts.',
   },
 }
 
@@ -509,6 +531,15 @@ export const hybridSearchTexts: Record<Lang, Record<string, string>> = {
     quizExplanation: 'RRF 基于各路结果的排名（rank）进行融合，不依赖原始得分量纲，无需调参，效果稳定，适用于向量搜索与全文搜索等多种结果的融合。',
     lessonLabel: '第 {{n}} 课',
     embedPlaceholder: '在左侧选择一项任务，此处将展示对应的代码或测试题',
+    taskWhy_stepHint: '混合搜索 = 向量搜索 + 全文搜索，兼顾语义与关键词。',
+    taskCreate_stepHint: '第一步：表内既有 FULLTEXT 索引（name, description），又有 HNSW 向量索引，才能做混合搜索。',
+    taskCreate_tryIt: '可增加一列 price DECIMAL(10,2)，或调整 FULLTEXT 覆盖的列。',
+    taskInsert_stepHint: '第二步：依赖上一步的 products 表。插入后即可在下一步做混合搜索。',
+    taskInsert_tryIt: '再插入几条产品，用不同 category，便于测试全文与向量组合效果。',
+    taskQuery_stepHint: '第三步：依赖上一步已插入的数据。向量得分用 (1 - 余弦距离) 转为相似度，再与全文得分加权。',
+    taskQuery_tryIt: '调整 0.6/0.4 权重，或改用 MATCH(...) AGAINST 不同关键词，观察排序变化。',
+    taskStrategy_stepHint: 'RRF 基于排名融合，不依赖得分量纲；Rerank 需调用重排模型，延迟更高。',
+    taskBest_stepHint: '先召回再精排可控制计算量；权重可根据业务 A/B 测试调优。',
   },
   en: {
     h1: 'Hybrid search',
@@ -542,6 +573,15 @@ export const hybridSearchTexts: Record<Lang, Record<string, string>> = {
     quizExplanation: 'RRF fuses results by rank, is score-scale agnostic, needs no tuning, and works for vector and full-text fusion.',
     lessonLabel: 'Lesson {{n}}',
     embedPlaceholder: 'Select a task on the left to see the code or quiz here.',
+    taskWhy_stepHint: 'Hybrid search = vector + full-text, for both semantics and keywords.',
+    taskCreate_stepHint: 'Step 1: Table needs both FULLTEXT (name, description) and HNSW vector index for hybrid search.',
+    taskCreate_tryIt: 'You can add a price DECIMAL(10,2) column or change FULLTEXT coverage.',
+    taskInsert_stepHint: 'Step 2: Depends on the products table from the previous step. After insert, run hybrid search next.',
+    taskInsert_tryIt: 'Insert more products with different categories to test full-text and vector combination.',
+    taskQuery_stepHint: 'Step 3: Depends on inserted data. Vector score = (1 - cosine distance); then weight with full-text score.',
+    taskQuery_tryIt: 'Adjust 0.6/0.4 weights or use different MATCH(...) AGAINST keywords and observe order.',
+    taskStrategy_stepHint: 'RRF fuses by rank and is score-scale agnostic; Rerank needs a rerank model and has higher latency.',
+    taskBest_stepHint: 'Recall then rank to control cost; tune weights with A/B tests for your use case.',
   },
 }
 
@@ -577,6 +617,11 @@ export const createDatabaseTexts: Record<Lang, Record<string, string>> = {
     basics2: '查看与切换：SHOW DATABASES、USE、SELECT DATABASE()',
     basics3: '删除数据库：DROP DATABASE（谨慎，不可恢复）',
     practiceDesc2: '按顺序完成：创建 → 查看/切换 → 删除（示例）→ 命名建议 → 章节测试。',
+    intro_stepHint: 'SeekDB 兼容 MySQL 语法，CREATE DATABASE / USE 等与 MySQL 一致。',
+    create_stepHint: 'IF NOT EXISTS 适合脚本重复执行；utf8mb4 支持完整 Unicode（含 emoji）。',
+    manage_stepHint: '执行建表、插入等操作前需先 USE 到目标库。',
+    drop_stepHint: '生产环境执行前请确保已备份重要数据；本示例仅作语法参考。',
+    naming_stepHint: '规范命名便于团队协作与运维。',
   },
   en: {
     h1: 'Create database',
@@ -609,6 +654,11 @@ export const createDatabaseTexts: Record<Lang, Record<string, string>> = {
     basics2: 'View and switch: SHOW DATABASES, USE, SELECT DATABASE()',
     basics3: 'Drop: DROP DATABASE (irreversible)',
     practiceDesc2: 'Create → view/switch → drop (example) → naming → quiz.',
+    intro_stepHint: 'SeekDB is MySQL-compatible; CREATE DATABASE, USE, etc. work as in MySQL.',
+    create_stepHint: 'IF NOT EXISTS is good for scripts and re-runs; utf8mb4 supports full Unicode including emoji.',
+    manage_stepHint: 'USE the target database before creating tables or inserting data.',
+    drop_stepHint: 'Back up important data before running in production; this example is for syntax only.',
+    naming_stepHint: 'Consistent naming helps team collaboration and operations.',
   },
 }
 
@@ -646,6 +696,12 @@ export const seekdbJsTexts: Record<Lang, Record<string, string>> = {
     quizC: 'Xenova/all-MiniLM-L6-v2（本地模型）',
     quizD: '需手动配置',
     quizExplanation: 'seekdb-js 默认使用 Xenova/all-MiniLM-L6-v2 本地模型，无需 API Key，适合快速开发与测试。',
+    install_stepHint: '本环境为演示；本地请在项目目录执行上述命令安装依赖。',
+    connect_stepHint: 'SDK 会自动处理连接与重连；本地请将 host/port/password 改为实际 SeekDB 实例。',
+    createCollection_stepHint: '依赖上一步已连接的 client；Collection 用于存储文档及其向量。',
+    addData_stepHint: 'SDK 会自动将 documents 转为向量；metadatas 用于存储额外字段便于过滤。',
+    query_stepHint: '依赖已 add 的数据；queryTexts 会先向量化再与集合内向量做相似度检索。',
+    admin_stepHint: 'SeekdbAdminClient 用于库级管理；日常 CRUD 使用 SeekdbClient + Collection。',
   },
   en: {
     h1: 'seekdb-js SDK',
@@ -680,6 +736,12 @@ export const seekdbJsTexts: Record<Lang, Record<string, string>> = {
     quizC: 'Xenova/all-MiniLM-L6-v2 (local)',
     quizD: 'Must be configured manually',
     quizExplanation: 'seekdb-js defaults to Xenova/all-MiniLM-L6-v2 local model, no API key needed.',
+    install_stepHint: 'This is a demo; run the commands above in your project directory to install locally.',
+    connect_stepHint: 'SDK handles connection and reconnection; set host/port/password to your SeekDB instance.',
+    createCollection_stepHint: 'Depends on the connected client from the previous step; Collection stores docs and vectors.',
+    addData_stepHint: 'SDK auto-vectorizes documents; metadatas store extra fields for filtering.',
+    query_stepHint: 'Depends on data added; queryTexts are vectorized then matched against collection vectors.',
+    admin_stepHint: 'SeekdbAdminClient is for database-level admin; use SeekdbClient + Collection for CRUD.',
   },
 }
 
@@ -714,6 +776,60 @@ export const electronNextjsTemplateTexts: Record<Lang, Record<string, string>> =
     quizC: '直接在前端页面里计算向量',
     quizD: '替代 Next.js 做路由',
     quizExplanation: 'Electron 主进程负责创建窗口、系统托盘、原生 API 等；界面与业务逻辑由 Next.js（渲染进程）承担，seekdb 用于数据与向量检索。',
+    intro_code: `# Electron + Next.js + seekdb 模板
+
+- **Electron**：桌面应用壳，主进程管理窗口与系统集成。
+- **Next.js**：渲染进程中的 Web 应用，负责页面与路由。
+- **seekdb-js**：在 Node/渲染进程中连接 SeekDB，实现向量与语义搜索。
+
+适用场景：需要打包成桌面客户端的 AI 应用（如本地知识库、离线检索工具）。`,
+    intro_stepHint: '模板将三者整合为一套可运行的脚手架，开箱即用。',
+    create_code: `# 使用 create-seekdb-app 创建项目（推荐）
+npx create-seekdb-app@latest my-electron-seekdb --template electron-nextjs
+
+# 或从官方模板仓库克隆
+# git clone https://github.com/seekdb/electron-nextjs-seekdb-template.git my-app
+# cd my-app`,
+    create_stepHint: '执行后会在当前目录生成 my-electron-seekdb（或你指定的目录），内含 Electron + Next.js + seekdb 配置。',
+    create_expectedOutput: '# 创建完成后进入目录: cd my-electron-seekdb',
+    run_code: `{
+  "scripts": {
+    "dev": "concurrently \\"next dev\\" \\"wait-on http://localhost:3000 && electron .\\"",
+    "build": "next build && electron-builder",
+    "start": "next start"
+  }
+}`,
+    run_stepHint: 'dev 会先启动 Next.js，再启动 Electron 并加载本地页面；本地请在该模板项目中执行 pnpm install && pnpm dev。',
+    run_expectedOutput: '# 终端中 Next 与 Electron 启动后，会弹出桌面窗口并打开应用',
+    structure_code: `my-electron-seekdb/
+├── main/           # Electron 主进程（创建窗口、加载 URL）
+├── preload/         # 预加载脚本（安全桥接 main 与 renderer）
+├── src/             # Next.js 应用
+│   ├── app/         # App Router 页面
+│   ├── lib/         # 可放 seekdb 客户端封装
+│   └── ...
+├── package.json
+└── next.config.js`,
+    structure_stepHint: 'seekdb-js 可在 Next.js 的 Server Component、API Route 或通过 preload 暴露给渲染进程使用。',
+    structure_expectedOutput: '# 了解结构后，在 lib 或 API 中接入 SeekdbClient 即可',
+    seekdb_config_code: `import { SeekdbClient } from "seekdb";
+
+// 从环境变量读取，便于区分开发/生产
+const client = new SeekdbClient({
+  host: process.env.SEEKDB_HOST ?? "127.0.0.1",
+  port: Number(process.env.SEEKDB_PORT) || 2881,
+  user: process.env.SEEKDB_USER ?? "root",
+  password: process.env.SEEKDB_PASSWORD ?? "",
+  database: process.env.SEEKDB_DATABASE ?? "test",
+});
+
+export async function getCollection(name: string) {
+  return client.getOrCreateCollection(name);
+}
+
+export { client };`,
+    seekdb_config_stepHint: '在 Next.js API Route 或 Server Action 中调用 getCollection/createCollection/query，避免在浏览器中暴露连接信息。',
+    seekdb_config_expectedOutput: "# 封装后可在页面或 API 中 import { client, getCollection } from '@/lib/seekdb'",
   },
   en: {
     h1: 'Electron + Next.js + seekdb template',
@@ -745,6 +861,60 @@ export const electronNextjsTemplateTexts: Record<Lang, Record<string, string>> =
     quizC: 'Computing vectors in the frontend',
     quizD: 'Replacing Next.js for routing',
     quizExplanation: 'Electron main process handles window, system tray, native APIs; Next.js handles UI and logic; seekdb for data and vector search.',
+    intro_code: `# Electron + Next.js + seekdb template
+
+- **Electron**: Desktop app shell; main process manages window and system integration.
+- **Next.js**: Web app in the renderer; pages and routing.
+- **seekdb-js**: Connects to SeekDB in Node/renderer; vector and semantic search.
+
+Use case: AI apps packaged as desktop clients (e.g. local knowledge base, offline retrieval).`,
+    intro_stepHint: 'The template integrates all three into a runnable scaffold, ready to use.',
+    create_code: `# Create project with create-seekdb-app (recommended)
+npx create-seekdb-app@latest my-electron-seekdb --template electron-nextjs
+
+# Or clone the official template repo
+# git clone https://github.com/seekdb/electron-nextjs-seekdb-template.git my-app
+# cd my-app`,
+    create_stepHint: 'After running, the current directory will contain my-electron-seekdb (or your chosen name) with Electron + Next.js + seekdb configured.',
+    create_expectedOutput: '# After creation, enter the directory: cd my-electron-seekdb',
+    run_code: `{
+  "scripts": {
+    "dev": "concurrently \\"next dev\\" \\"wait-on http://localhost:3000 && electron .\\"",
+    "build": "next build && electron-builder",
+    "start": "next start"
+  }
+}`,
+    run_stepHint: 'dev starts Next.js then Electron loading the local app; run pnpm install && pnpm dev in the template project.',
+    run_expectedOutput: '# After Next and Electron start, a desktop window opens with the app',
+    structure_code: `my-electron-seekdb/
+├── main/           # Electron main process (window, load URL)
+├── preload/         # Preload script (bridge main & renderer)
+├── src/             # Next.js app
+│   ├── app/         # App Router pages
+│   ├── lib/         # e.g. seekdb client wrapper
+│   └── ...
+├── package.json
+└── next.config.js`,
+    structure_stepHint: 'seekdb-js can be used in Next.js Server Component, API Route, or exposed to the renderer via preload.',
+    structure_expectedOutput: '# After reviewing the structure, wire SeekdbClient in lib or API',
+    seekdb_config_code: `import { SeekdbClient } from "seekdb";
+
+// Read from env for dev/prod
+const client = new SeekdbClient({
+  host: process.env.SEEKDB_HOST ?? "127.0.0.1",
+  port: Number(process.env.SEEKDB_PORT) || 2881,
+  user: process.env.SEEKDB_USER ?? "root",
+  password: process.env.SEEKDB_PASSWORD ?? "",
+  database: process.env.SEEKDB_DATABASE ?? "test",
+});
+
+export async function getCollection(name: string) {
+  return client.getOrCreateCollection(name);
+}
+
+export { client };`,
+    seekdb_config_stepHint: 'Call getCollection/createCollection/query in Next.js API Route or Server Action; avoid exposing connection in the browser.',
+    seekdb_config_expectedOutput: "# Then in pages or API: import { client, getCollection } from '@/lib/seekdb'",
   },
 }
 
@@ -781,6 +951,67 @@ export const nextjsSeekdbTemplateTexts: Record<Lang, Record<string, string>> = {
     quizC: '只在 build 时执行一次',
     quizD: '必须在 Edge Runtime 中',
     quizExplanation: '推荐在服务端（API Routes、Server Actions、Server Components）使用 seekdb-js，可避免在浏览器暴露连接信息，并利用服务端能力做向量检索。',
+    intro_code: `# Next.js + seekdb 模板
+
+- **Next.js 14+**：App Router、Server Components、API Routes
+- **seekdb-js**：在服务端连接 SeekDB，实现向量搜索与数据操作
+- **TypeScript**：完整类型支持
+
+适用场景：需要服务端渲染或 API 的 Web 应用，结合向量/语义搜索。`,
+    intro_stepHint: '模板开箱即用，创建后配置环境变量即可连接 SeekDB。',
+    create_code: `npx create-seekdb-app@latest my-app
+
+# 或使用 pnpm
+pnpm create seekdb-app my-app
+
+# 或使用 yarn
+yarn create seekdb-app my-app`,
+    create_stepHint: '将 my-app 替换为你的项目名称；工具会自动创建项目目录并安装依赖。',
+    create_expectedOutput: '# 创建完成后会进入交互式提示，选择模板',
+    select_template_code: `? Select a template: (Use arrow keys)
+❯ Next.js + seekdb
+  Electron + Next.js + seekdb
+  Express + seekdb
+  Fastify + seekdb`,
+    select_template_stepHint: '在交互式提示中用方向键选择「Next.js + seekdb」后回车。',
+    select_template_expectedOutput: '# 选择后继续生成项目文件',
+    env_code: `# .env.local
+SEEKDB_HOST=127.0.0.1
+SEEKDB_PORT=2881
+SEEKDB_USER=root
+SEEKDB_PASSWORD=
+SEEKDB_DATABASE=test`,
+    env_stepHint: '在项目根目录创建 .env.local；请先安装并启动 seekdb 服务，再按实际修改连接参数。',
+    env_expectedOutput: '# 保存后应用会读取这些环境变量连接 SeekDB',
+    dev_code: `pnpm dev
+
+# 默认运行在 http://localhost:3000`,
+    dev_stepHint: '在项目目录执行；首次可先 pnpm install。',
+    dev_expectedOutput: '# 开发服务器启动后，在浏览器打开 http://localhost:3000',
+    api_route_code: `// app/api/search/route.ts
+import { SeekdbClient } from 'seekdb';
+
+const client = new SeekdbClient({
+  host: process.env.SEEKDB_HOST,
+  port: parseInt(process.env.SEEKDB_PORT || '2881'),
+  user: process.env.SEEKDB_USER,
+  password: process.env.SEEKDB_PASSWORD,
+  database: process.env.SEEKDB_DATABASE,
+});
+
+export async function POST(request: Request) {
+  const { query } = await request.json();
+
+  const collection = await client.getCollection('documents');
+  const results = await collection.query({
+    queryTexts: query,
+    nResults: 10,
+  });
+
+  return Response.json(results);
+}`,
+    api_route_stepHint: '在 API Route 中从环境变量读取连接配置，接收 POST 请求后做语义搜索并返回 JSON。',
+    api_route_expectedOutput: "# 前端可 fetch('/api/search', { method: 'POST', body: JSON.stringify({ query: '...' }) }) 调用",
   },
   en: {
     h1: 'Next.js + seekdb template',
@@ -814,6 +1045,67 @@ export const nextjsSeekdbTemplateTexts: Record<Lang, Record<string, string>> = {
     quizC: 'Only once at build time',
     quizD: 'Must be in Edge Runtime',
     quizExplanation: 'Use seekdb-js on the server (API Routes, Server Actions, Server Components) to avoid exposing connection details and use server-side vector search.',
+    intro_code: `# Next.js + seekdb template
+
+- **Next.js 14+**: App Router, Server Components, API Routes
+- **seekdb-js**: Connect to SeekDB on the server; vector search and data operations
+- **TypeScript**: Full type support
+
+Use case: Web apps with SSR or API, plus vector/semantic search.`,
+    intro_stepHint: 'Template is ready to use; configure env vars after creation to connect to SeekDB.',
+    create_code: `npx create-seekdb-app@latest my-app
+
+# or with pnpm
+pnpm create seekdb-app my-app
+
+# or with yarn
+yarn create seekdb-app my-app`,
+    create_stepHint: 'Replace my-app with your project name; the CLI will create the directory and install dependencies.',
+    create_expectedOutput: '# After creation you will see an interactive prompt to select a template',
+    select_template_code: `? Select a template: (Use arrow keys)
+❯ Next.js + seekdb
+  Electron + Next.js + seekdb
+  Express + seekdb
+  Fastify + seekdb`,
+    select_template_stepHint: 'Use arrow keys to select "Next.js + seekdb" and press Enter.',
+    select_template_expectedOutput: '# After selection the project files are generated',
+    env_code: `# .env.local
+SEEKDB_HOST=127.0.0.1
+SEEKDB_PORT=2881
+SEEKDB_USER=root
+SEEKDB_PASSWORD=
+SEEKDB_DATABASE=test`,
+    env_stepHint: 'Create .env.local in the project root; install and start seekdb first, then set connection params.',
+    env_expectedOutput: '# After saving, the app will read these env vars to connect to SeekDB',
+    dev_code: `pnpm dev
+
+# Default: http://localhost:3000`,
+    dev_stepHint: 'Run in the project directory; run pnpm install first if needed.',
+    dev_expectedOutput: '# After the dev server starts, open http://localhost:3000 in the browser',
+    api_route_code: `// app/api/search/route.ts
+import { SeekdbClient } from 'seekdb';
+
+const client = new SeekdbClient({
+  host: process.env.SEEKDB_HOST,
+  port: parseInt(process.env.SEEKDB_PORT || '2881'),
+  user: process.env.SEEKDB_USER,
+  password: process.env.SEEKDB_PASSWORD,
+  database: process.env.SEEKDB_DATABASE,
+});
+
+export async function POST(request: Request) {
+  const { query } = await request.json();
+
+  const collection = await client.getCollection('documents');
+  const results = await collection.query({
+    queryTexts: query,
+    nResults: 10,
+  });
+
+  return Response.json(results);
+}`,
+    api_route_stepHint: 'Read connection config from env in the API Route; accept POST, run semantic search, return JSON.',
+    api_route_expectedOutput: "# Frontend can call fetch('/api/search', { method: 'POST', body: JSON.stringify({ query: '...' }) })",
   },
 }
 
@@ -855,6 +1147,67 @@ export const createSeekdbAppTexts: Record<Lang, Record<string, string>> = {
     quizC: '仅 Electron',
     quizD: '仅 Express',
     quizExplanation: 'create-seekdb-app 提供 Next.js + seekdb、Electron + Next.js + seekdb、Express + seekdb、Fastify + seekdb 等多种模板，可按需求选择。',
+    intro_code: `# create-seekdb-app
+
+- 一条命令创建完整的 seekdb 应用项目
+- 支持 Next.js、Electron、Express、Fastify 等多种模板
+- 自动生成项目结构和配置文件，开箱即用
+- 所有模板均提供完整 TypeScript 支持`,
+    intro_stepHint: '与 create-react-app、create-next-app 类似，专为 seekdb 应用定制的脚手架。',
+    create_code: `# 使用 npm
+npm create seekdb-app@latest my-app
+
+# 使用 pnpm
+pnpm create seekdb-app my-app
+
+# 使用 yarn
+yarn create seekdb-app my-app`,
+    create_stepHint: '将 my-app 替换为你的项目名称；工具会自动创建新目录。',
+    create_expectedOutput: '# 执行后会进入交互式提示，选择模板',
+    select_template_code: `? Select a template: (Use arrow keys)
+❯ Next.js + seekdb
+  Electron + Next.js + seekdb
+  Express + seekdb
+  Fastify + seekdb`,
+    select_template_stepHint: '用方向键选择模板后回车，即可生成对应项目。',
+    select_template_expectedOutput: '# 选择后继续生成项目文件',
+    cd_code: 'cd my-app',
+    cd_stepHint: '若创建时使用了其他项目名，此处改为对应目录名。',
+    cd_expectedOutput: '# 进入项目根目录后即可执行 install、dev 等',
+    install_code: `# 使用 pnpm
+pnpm install
+
+# 或使用 npm
+npm install
+
+# 或使用 yarn
+yarn install`,
+    install_stepHint: '在项目根目录执行，安装模板所需依赖。',
+    install_expectedOutput: '# 安装完成后可配置 .env.local 并运行 dev',
+    env_code: `# .env.local
+SEEKDB_HOST=127.0.0.1
+SEEKDB_PORT=2881
+SEEKDB_USER=root
+SEEKDB_PASSWORD=
+SEEKDB_DATABASE=test`,
+    env_stepHint: '请勿将 .env.local 提交到 Git，其包含敏感连接信息。',
+    env_expectedOutput: '# 根据模板提示配置；保存后应用会读取这些变量',
+    dev_code: `pnpm dev
+
+# 或
+npm run dev
+
+# 或
+yarn dev`,
+    dev_stepHint: '启动开发服务器后，按模板不同可访问对应地址（如 Next.js 默认 http://localhost:3000）。',
+    dev_expectedOutput: '# 开发服务器启动，可开始开发与调试',
+    templates_code: `## 可用模板
+
+- **Next.js + seekdb**：构建现代化 Web 应用，支持 SSR 和 API 路由
+- **Electron + Next.js + seekdb**：跨平台桌面应用，集成向量搜索
+- **Express + seekdb**：使用 Express 构建 RESTful API 服务
+- **Fastify + seekdb**：使用 Fastify 构建高性能 API 服务`,
+    templates_stepHint: '按技术栈与部署形态选择；学院内另有 Next.js / Electron 模板单独课程可深入。',
   },
   en: {
     h1: 'create-seekdb-app',
@@ -893,6 +1246,67 @@ export const createSeekdbAppTexts: Record<Lang, Record<string, string>> = {
     quizC: 'Only Electron',
     quizD: 'Only Express',
     quizExplanation: 'create-seekdb-app offers Next.js, Electron+Next.js, Express, Fastify templates with seekdb.',
+    intro_code: `# create-seekdb-app
+
+- One command to create a full seekdb app project
+- Templates: Next.js, Electron, Express, Fastify, etc.
+- Auto-generated project structure and config, ready to use
+- All templates include full TypeScript support`,
+    intro_stepHint: 'Like create-react-app or create-next-app, but for seekdb apps.',
+    create_code: `# With npm
+npm create seekdb-app@latest my-app
+
+# With pnpm
+pnpm create seekdb-app my-app
+
+# With yarn
+yarn create seekdb-app my-app`,
+    create_stepHint: 'Replace my-app with your project name; the CLI will create the directory.',
+    create_expectedOutput: '# After running you will see an interactive prompt to select a template',
+    select_template_code: `? Select a template: (Use arrow keys)
+❯ Next.js + seekdb
+  Electron + Next.js + seekdb
+  Express + seekdb
+  Fastify + seekdb`,
+    select_template_stepHint: 'Use arrow keys to select a template and press Enter to generate the project.',
+    select_template_expectedOutput: '# After selection the project files are generated',
+    cd_code: 'cd my-app',
+    cd_stepHint: 'If you used a different project name, use that directory name here.',
+    cd_expectedOutput: '# After entering the project root you can run install, dev, etc.',
+    install_code: `# With pnpm
+pnpm install
+
+# Or npm
+npm install
+
+# Or yarn
+yarn install`,
+    install_stepHint: 'Run in the project root to install template dependencies.',
+    install_expectedOutput: '# After install you can configure .env.local and run dev',
+    env_code: `# .env.local
+SEEKDB_HOST=127.0.0.1
+SEEKDB_PORT=2881
+SEEKDB_USER=root
+SEEKDB_PASSWORD=
+SEEKDB_DATABASE=test`,
+    env_stepHint: 'Do not commit .env.local to Git; it contains sensitive connection info.',
+    env_expectedOutput: '# Configure as prompted by the template; the app will read these vars',
+    dev_code: `pnpm dev
+
+# or
+npm run dev
+
+# or
+yarn dev`,
+    dev_stepHint: 'After the dev server starts, the URL depends on the template (e.g. Next.js http://localhost:3000).',
+    dev_expectedOutput: '# Dev server started; you can start developing and debugging',
+    templates_code: `## Available templates
+
+- **Next.js + seekdb**: Modern web app with SSR and API routes
+- **Electron + Next.js + seekdb**: Cross-platform desktop app with vector search
+- **Express + seekdb**: RESTful API with Express
+- **Fastify + seekdb**: High-performance API with Fastify`,
+    templates_stepHint: 'Choose by tech stack and deployment; the academy has separate lessons for Next.js and Electron templates.',
   },
 }
 
