@@ -1,0 +1,102 @@
+.article {
+  padding: 0;
+  color: var(--text-body);
+}
+
+.h1 {
+  font-size: var(--font-size-h1);
+  font-weight: var(--font-weight-bold);
+  margin: 0 0 16px;
+}
+
+.h2 {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-bold);
+  margin: 28px 0 12px;
+}
+
+.h3 {
+  font-size: var(--font-size-h3);
+  font-weight: var(--font-weight-bold);
+  margin: 24px 0 12px;
+}
+
+.h4 {
+  font-size: var(--font-size-h4);
+  font-weight: var(--font-weight-bold);
+}
+
+.article p {
+  margin: 0 0 12px;
+  color: var(--text-body);
+}
+
+.article ul {
+  margin: 0 0 16px;
+  padding-left: 24px;
+}
+
+.article li {
+  margin-bottom: 6px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 14px;
+}
+
+.table th,
+.table td {
+  padding: 10px 14px;
+  text-align: left;
+  border: 1px solid var(--border);
+}
+
+.table th {
+  background: var(--bg-elevated);
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.table td {
+  color: var(--text);
+}
+
+.muted {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin-top: 16px;
+}
+
+/* 待开发课程状态标识（占位页内） */
+.statusBadge {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-muted);
+  background: rgba(255, 255, 255, 0.08);
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+/* 课程感：步骤/练习区块容器，弱化文档式长文 */
+.lessonBlock {
+  margin: 20px 0;
+  padding: 16px 20px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.lessonLabel {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 8px;
+}

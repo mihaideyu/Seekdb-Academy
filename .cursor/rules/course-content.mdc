@@ -1,0 +1,18 @@
+---
+description: 各章节内容与交互规范，全局适用
+globs:
+  - src/pages/**/*.tsx
+  - src/components/**/*.tsx
+---
+
+# 课程内容规范（全局适用）
+
+## 1. 内容中不出现表情符号
+- 各章节标题、正文、列表、提示文案中**不要使用 emoji**（如 🤖 🔌 🔍 💡 等）。
+- 代码块前的步骤提示使用文字「提示」或图标组件，不使用 💡 等表情。
+
+## 2. 下一节烟花效果
+- 当用户完成某章节**所有任务**后，点击【下一节】时需出现**烟花（撒花）动效**。
+- 动效与【概述】章节下的【下一节】一致：从按钮位置向上喷射，再下落散开。
+- 实现方式：该章节页提供 `onNextClick` 与 `nextButtonRef` 给 `LessonNav`，在回调中先调用 `playConfetti(generateConfettiPieces(origin))`，再 `markComplete(lessonId)` 并 `navigate(next.path)`。
+- 烟花生成逻辑已抽到 `src/utils/confetti.ts` 的 `generateConfettiPieces(origin)`，各页复用即可。

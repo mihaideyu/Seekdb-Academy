@@ -1,0 +1,122 @@
+/* ========== 字体规范（全局） ==========
+ * 中文字体：PingFang SC；英文字体：Inter
+ * 字重：中文默认 400、加粗 500；英文默认 500、加粗 600
+ * 字号：一级标题 24px、二级 20px、三级分组 16px、四级 14px、正文 14px
+ */
+/* 深色主题（默认） */
+:root,
+[data-theme="dark"] {
+  --bg: #0d1117;
+  --bg-elevated: #161b22;
+  --bg-code: #0d1117;
+  --border: #30363d;
+  --text: #e6edf3;
+  --text-body: #d1d5db;
+  --text-muted: #8b949e;
+  --text-auxiliary: #6b7280;
+  --accent: #58a6ff;
+  --accent-soft: rgba(88, 166, 255, 0.15);
+  --success: #3fb950;
+  --success-soft: rgba(63, 185, 80, 0.15);
+  --warning: #d29922;
+  --error: #f85149;
+  --bg-disabled: #21262d;
+  --text-disabled: #484f58;
+  --border-disabled: #30363d;
+  --radius: 8px;
+  --font-sans: 'PingFang SC', 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --font-size-h1: 24px;
+  --font-size-h2: 20px;
+  --font-size-h3: 16px;
+  --font-size-h4: 14px;
+  --font-size-body: 14px;
+  /* 布局用色（导航、侧栏、概述页面板） */
+  --bg-nav: rgb(17, 24, 39);
+  --bg-sidebar: #111827;
+  --bg-panel: rgba(17, 24, 39, 0.5);
+  --border-panel: rgba(31, 41, 55, 1);
+  --bg-col-third: #0f1115;
+}
+
+/* 浅色主题 */
+[data-theme="light"] {
+  --bg: #f6f8fa;
+  --bg-elevated: #ffffff;
+  --bg-code: #ffffff;
+  --border: #d0d7de;
+  --text: #1f2328;
+  --text-body: #424a53;
+  --text-muted: #656d76;
+  --text-auxiliary: #6b7280;
+  --accent: #0969da;
+  --accent-soft: rgba(9, 105, 218, 0.12);
+  --success: #1a7f37;
+  --success-soft: rgba(26, 127, 55, 0.12);
+  --warning: #9a6700;
+  --error: #cf222e;
+  --bg-disabled: #eaeef2;
+  --text-disabled: #8c959f;
+  --border-disabled: #d8dee4;
+  --bg-nav: #f6f8fa;
+  --bg-sidebar: #f0f2f5;
+  --bg-panel: rgba(255, 255, 255, 0.9);
+  --border-panel: #d0d7de;
+  --bg-col-third: #f6f8fa;
+}
+
+/* 中文：默认字重 400，加粗 500 */
+.lang-zh {
+  --font-weight-normal: 400;
+  --font-weight-bold: 500;
+}
+/* 英文：默认字重 500，加粗 600 */
+.lang-en {
+  --font-weight-normal: 500;
+  --font-weight-bold: 600;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-normal, 400);
+  line-height: 1.6;
+}
+
+/* 标题字号（字重由各组件或 .lang-* 控制） */
+h1, .text-h1 { font-size: var(--font-size-h1); font-weight: var(--font-weight-bold, 500); }
+h2, .text-h2 { font-size: var(--font-size-h2); font-weight: var(--font-weight-bold, 500); }
+h3, .text-h3 { font-size: var(--font-size-h3); font-weight: var(--font-weight-bold, 500); }
+h4, .text-h4 { font-size: var(--font-size-h4); font-weight: var(--font-weight-bold, 500); }
+
+#root {
+  height: 100%;
+  min-height: 100vh;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+code, .mono {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+}
+
+/* Term 组件的 tooltip 已改为 Portal 渲染，见 Term.tsx，此处不再使用 [data-tooltip]::after */

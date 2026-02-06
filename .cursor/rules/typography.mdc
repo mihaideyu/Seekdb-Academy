@@ -1,0 +1,35 @@
+---
+description: 本项目全局字体与字号规范，新增或修改样式时请遵循
+globs: 
+  - **/*.css
+  - **/*.module.css
+  - **/*.tsx
+---
+
+# 字体规范（全局）
+
+## 字体族
+- **中文**：PingFang SC（苹方-简）
+- **英文**：Inter
+- CSS 变量：`var(--font-sans)` 已定义为 `'PingFang SC', 'Inter', system-ui, sans-serif`
+
+## 字重
+- **中文**：默认 400，加粗 500
+- **英文**：默认 500，加粗 600
+- 通过 `html` 的 class `.lang-zh` / `.lang-en` 切换，对应 CSS 变量：
+  - `--font-weight-normal`：正文
+  - `--font-weight-bold`：标题/加粗
+
+## 字号
+| 用途       | 字号   | CSS 变量 / 用法        |
+|------------|--------|-------------------------|
+| 一级标题   | 24px   | `var(--font-size-h1)`   |
+| 二级标题   | 20px   | `var(--font-size-h2)`   |
+| 三级分组标题 | 16px | `var(--font-size-h3)`   |
+| 四级标题   | 14px   | `var(--font-size-h4)`   |
+| 正文       | 14px   | `var(--font-size-body)` |
+
+- 标题使用 `font-weight: var(--font-weight-bold);`
+- 正文使用 `font-size: var(--font-size-body); font-weight: var(--font-weight-normal);`
+
+以上变量与 base 样式已在 `src/index.css` 中定义，组件中直接引用变量即可。

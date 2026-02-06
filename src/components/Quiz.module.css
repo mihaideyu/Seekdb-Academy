@@ -1,0 +1,157 @@
+.wrapper {
+  margin: 32px 0;
+  padding: 24px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.title {
+  margin: 0 0 12px;
+  font-size: 16px;
+  color: var(--text);
+}
+
+.question {
+  margin: 0 0 16px;
+  font-size: 15px;
+  color: var(--text);
+  line-height: 1.5;
+}
+
+.options {
+  list-style: none;
+  margin: 0 0 20px;
+  padding: 0;
+}
+
+.options li {
+  margin-bottom: 8px;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.option:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.option input {
+  margin: 0;
+}
+
+.optionLetter {
+  font-weight: 600;
+  color: var(--text-muted);
+  min-width: 20px;
+}
+
+.optionCorrect {
+  border-color: var(--success);
+  background: var(--success-soft);
+}
+
+.optionCorrect .optionLetter {
+  color: var(--success);
+}
+
+.optionWrong {
+  border-color: var(--error);
+  background: rgba(248, 81, 73, 0.1);
+}
+
+.optionWrong .optionLetter {
+  color: var(--error);
+}
+
+/* 与 LessonNav 下一节按钮一致：白底、深色文字、8px 圆角、轻微阴影 */
+.submitBtn {
+  padding: 8px 20px;
+  background: var(--bg-elevated);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: none;
+}
+
+.submitBtn:hover:not(:disabled) {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-color: var(--accent);
+  box-shadow: none;
+}
+
+.submitBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.unifiedSubmitWrap {
+  margin-top: 20px;
+}
+
+.feedback {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.feedbackCorrect {
+  color: var(--success);
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.feedbackWrong {
+  color: var(--error);
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.explanation {
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.explanation strong {
+  color: var(--text);
+}
+
+.singleWrapper {
+  margin-bottom: 24px;
+}
+
+.singleWrapper:last-child {
+  margin-bottom: 0;
+}
+
+.setHint {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin: 0 0 16px;
+}
+
+.summary {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.summaryPerfect {
+  color: var(--success);
+}

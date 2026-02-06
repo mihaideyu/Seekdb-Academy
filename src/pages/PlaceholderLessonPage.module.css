@@ -1,0 +1,85 @@
+/* 待开发课程占位页：插图式布局 */
+.root {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 32px 24px 40px;
+  text-align: center;
+}
+
+.illustration {
+  margin: 0 auto 24px;
+  width: 120px;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.illustration svg {
+  width: 100%;
+  height: 100%;
+}
+
+.placeholderTitle {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0 0 12px;
+  line-height: 1.3;
+}
+
+.placeholderDesc {
+  font-size: 14px;
+  color: var(--text-body);
+  line-height: 1.6;
+  margin: 0 0 28px;
+  max-width: 420px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.topicsBox {
+  text-align: left;
+  padding: 20px 24px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  margin-bottom: 32px;
+}
+
+.topicsTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0 0 12px;
+}
+
+.topicsList {
+  margin: 0;
+  padding-left: 20px;
+  font-size: 14px;
+  color: var(--text-body);
+  line-height: 1.8;
+}
+
+.topicsList li {
+  margin-bottom: 4px;
+}
+
+.topicsList li::marker {
+  color: var(--accent);
+}
+
+.footerLink {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin-top: 16px;
+}
+
+.footerLink a {
+  color: var(--accent);
+}
+
+.footerLink a:hover {
+  text-decoration: underline;
+}

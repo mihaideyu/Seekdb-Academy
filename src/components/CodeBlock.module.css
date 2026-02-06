@@ -1,0 +1,330 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 16px 0;
+  flex: 1;
+  min-height: 0;
+}
+
+/* 脚本卡片：仅包含文件名、运行按钮与代码区，与结果卡片等高 */
+.scriptCard {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-code);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+/* 执行结果独立卡片：与脚本卡片等高，展示在脚本卡片下方 */
+.resultCard {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-code);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+[data-theme="light"] .resultCard {
+  background: #ffffff;
+  border-color: var(--border);
+}
+
+.stepHint {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 10px 14px;
+  background: rgba(88, 166, 255, 0.08);
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.stepHintIcon {
+  flex-shrink: 0;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 14px;
+  background: rgba(255, 255, 255, 0.03);
+  border-bottom: 1px solid var(--border);
+}
+
+.filename {
+  font-size: 13px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+
+.runBtn {
+  padding: 6px 14px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.runBtn:hover:not(:disabled) {
+  filter: brightness(1.1);
+}
+
+.runBtn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.pre {
+  flex: 1;
+  min-height: 0;
+  margin: 0;
+  padding: 16px;
+  overflow: auto;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text);
+}
+
+/* 可编辑片段外层：内联以融入代码行，相对定位供测量用 span 定位 */
+.editableInlayWrap {
+  display: inline-block;
+  position: relative;
+  vertical-align: bottom;
+}
+
+/* 测量用：与输入框同字体字号，不可见、不占布局，用于根据内容计算宽度 */
+.editableInlayMeasure {
+  position: absolute;
+  left: 0;
+  top: 0;
+  visibility: hidden;
+  white-space: pre;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.5;
+  padding: 0 6px;
+  pointer-events: none;
+}
+
+/* 试试看引导的可编辑片段：与代码区同字体，弱边框表示可编辑，宽度由测量值自适应 */
+.editableInlay {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text);
+  background: rgba(88, 166, 255, 0.12);
+  border: 1px solid rgba(88, 166, 255, 0.4);
+  border-radius: 4px;
+  padding: 2px 6px;
+  margin: 0 2px;
+  min-width: 80px;
+  max-width: 100%;
+  box-sizing: border-box;
+  outline: none;
+}
+
+.editableInlay:focus {
+  border-color: var(--accent);
+  background: rgba(88, 166, 255, 0.15);
+}
+
+.tryIt {
+  padding: 10px 14px;
+  background: rgba(63, 185, 80, 0.08);
+  border-top: 1px solid var(--border);
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.tryItLabel {
+  display: inline-block;
+  margin-right: 8px;
+  font-weight: 500;
+  color: var(--success);
+}
+
+.resultHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: rgba(0, 0, 0, 0.2);
+  border-bottom: 1px solid var(--border);
+}
+
+[data-theme="light"] .resultHeader {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.resultTitle {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.resultMeta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.resultTime {
+  font-size: 12px;
+  color: var(--success);
+  font-family: var(--font-mono);
+}
+
+/* 视图切换：Raw / Table / Chart */
+.viewTabs {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.viewTab {
+  padding: 4px 10px;
+  font-size: 12px;
+  color: var(--text-muted);
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.viewTab:hover {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+[data-theme="light"] .viewTab:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.viewTabActive {
+  color: var(--accent);
+  background: rgba(88, 166, 255, 0.15);
+}
+
+[data-theme="light"] .viewTabActive {
+  background: var(--accent-soft);
+}
+
+.resultBody {
+  flex: 1;
+  min-height: 0;
+  padding: 14px;
+  overflow: auto;
+}
+
+.resultPlaceholder {
+  font-size: 13px;
+  color: var(--text-muted);
+  text-align: center;
+  padding: 24px 0;
+}
+
+.resultPre {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-muted);
+  white-space: pre-wrap;
+}
+
+/* 表格视图 */
+.resultTableWrap {
+  overflow-x: auto;
+}
+
+.resultTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.resultTable th,
+.resultTable td {
+  padding: 8px 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+
+.resultTable th {
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 0.03em;
+}
+
+.resultTable td {
+  color: var(--text);
+}
+
+.resultTable tr:hover td {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+[data-theme="light"] .resultTable tr:hover td {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+/* 图表视图 */
+.chartWrap {
+  padding: 8px 0;
+}
+
+.chartBar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.chartLabel {
+  flex: 0 0 140px;
+  font-size: 12px;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chartBarTrack {
+  flex: 1;
+  height: 24px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.chartBarFill {
+  height: 100%;
+  min-width: 4px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--accent), rgba(88, 166, 255, 0.6));
+  transition: width 0.2s ease;
+}
+
+.chartValue {
+  flex: 0 0 48px;
+  font-size: 12px;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  text-align: right;
+}

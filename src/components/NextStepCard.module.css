@@ -1,0 +1,68 @@
+.wrapper {
+  margin: 32px 0;
+  padding: 20px 24px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.title {
+  margin: 0 0 8px;
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.hint {
+  margin: 0 0 16px;
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.list li {
+  margin-bottom: 10px;
+}
+
+.list li:last-child {
+  margin-bottom: 0;
+}
+
+.card {
+  display: block;
+  padding: 14px 18px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  text-decoration: none;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.card:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: var(--accent);
+  text-decoration: none;
+}
+
+.cardLabel {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.cardDesc {
+  display: block;
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+
+.arrow {
+  font-size: 13px;
+  color: var(--accent);
+}

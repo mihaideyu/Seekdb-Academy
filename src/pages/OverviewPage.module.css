@@ -1,0 +1,392 @@
+/* 概述页：三列布局（侧栏 | 内容面板 | 代码/结果 Playground）；第2列定宽，第3列充满剩余宽度并充满视窗高 */
+.overviewRoot {
+  display: grid;
+  grid-template-columns: 460px 1fr;
+  gap: 24px;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  align-items: stretch;
+}
+
+/* 第二列：独立内容面板，定宽；中部可滚动，底部下一步固定 */
+.colIntro {
+  min-width: 0;
+  width: 460px;
+  height: 100%;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-panel);
+  color: var(--text-body);
+  border: none;
+  border-right: 1px solid var(--border-panel);
+  border-radius: 0;
+  min-height: 0;
+}
+
+/* 第二列可滚动区域：标题、目标、开发方式、任务列表 */
+.colIntroScroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 24px 28px;
+}
+
+.lessonLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 0;
+}
+
+.h1 {
+  font-size: var(--font-size-h1);
+  font-weight: var(--font-weight-bold);
+  margin: 0 0 4px;
+}
+
+.colIntro p {
+  margin: 0;
+  color: var(--text-body);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.sectionTitle {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-bold);
+  margin: 12px 0 4px;
+  color: var(--text);
+}
+
+.sectionDesc {
+  margin: 0 0 8px;
+  font-size: 14px;
+  color: var(--text-auxiliary);
+  line-height: 1.5;
+}
+
+/* 与描述融合的顶部信息块（如 AI 工作流页的典型应用场景、最佳实践） */
+.introBlock p {
+  margin-bottom: 8px;
+}
+
+/* RAG 工作流概览：垂直分步流程（无 STEP 文案，仅数字圆标 + 标题与描述，布局紧凑） */
+.ragFlow {
+  margin: 8px 0 12px;
+  padding: 0;
+  list-style: none;
+  position: relative;
+}
+
+.ragFlow::before {
+  content: '';
+  position: absolute;
+  left: 13px;
+  top: 22px;
+  bottom: 22px;
+  width: 2px;
+  background: linear-gradient(180deg, rgba(88, 166, 255, 0.4), rgba(168, 85, 247, 0.3), rgba(34, 197, 94, 0.3), rgba(56, 189, 248, 0.3), rgba(236, 72, 153, 0.3));
+  border-radius: 1px;
+  z-index: 0;
+}
+
+.ragFlowStep {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  position: relative;
+  z-index: 1;
+  margin-bottom: 12px;
+}
+
+.ragFlowStep:last-child {
+  margin-bottom: 0;
+}
+
+.ragFlowIcon {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  /* 不透明背景避免背后步骤条竖线穿透 */
+  background: var(--bg-code, #1a1d24);
+}
+
+.ragFlowIconStep1 { border: 1px solid rgba(59, 130, 246, 0.4); }
+.ragFlowIconStep2 { border: 1px solid rgba(139, 92, 246, 0.4); }
+.ragFlowIconStep3 { border: 1px solid rgba(34, 197, 94, 0.4); }
+.ragFlowIconStep4 { border: 1px solid rgba(14, 165, 233, 0.4); }
+.ragFlowIconStep5 { border: 1px solid rgba(236, 72, 153, 0.4); }
+
+.ragFlowBody {
+  flex: 1;
+  min-width: 0;
+}
+
+.ragFlowTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0 0 2px;
+}
+
+.ragFlowDesc {
+  font-size: 12px;
+  color: var(--text-auxiliary);
+  line-height: 1.45;
+  margin: 0;
+}
+
+.ragFlowTip {
+  font-size: 12px;
+  color: var(--text-auxiliary);
+  line-height: 1.45;
+  margin: 4px 0 0;
+}
+
+.introH3 {
+  font-size: var(--font-size-h3, 15px);
+  font-weight: var(--font-weight-bold, 600);
+  margin: 12px 0 4px;
+  color: var(--text);
+}
+
+.introTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 12px 0;
+  font-size: 13px;
+}
+
+.introTable th,
+.introTable td {
+  padding: 8px 12px;
+  text-align: left;
+  border: 1px solid var(--border);
+}
+
+.introTable th {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.introTable td {
+  color: var(--text);
+}
+
+/* 任务列表：选择开发方式、STEP1～4、章节测试，统一样式 */
+.taskList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.taskCard {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  background: rgba(31, 41, 55, 1);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.2s, background 0.2s;
+  width: 100%;
+}
+
+[data-theme="light"] .taskCard {
+  background: var(--bg-elevated);
+  border-color: var(--border);
+}
+
+.taskCard:hover {
+  border-color: var(--accent);
+  background: rgba(88, 166, 255, 0.06);
+}
+
+[data-theme="light"] .taskCard:hover {
+  background: var(--accent-soft);
+}
+
+.taskCardSelected {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+[data-theme="light"] .taskCardSelected {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+}
+
+/* 未完成态：与第1列课程目录一致，透出空心圈圈（12px）；有内容时显示步骤号/对号 */
+.taskCardIcon {
+  flex-shrink: 0;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 1px solid var(--text-muted);
+  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 8px;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+/* 未完成任务选中态：圆圈保持灰色，不变蓝 */
+/* （仅 .taskCardDone .taskCardIcon 会改为绿色对号） */
+
+/* 任务已完成：与左侧二级目录一致，绿色圆圈 + 白色对号 */
+.taskCardDone .taskCardIcon {
+  border-color: var(--success);
+  background: var(--success);
+  color: #fff;
+  font-size: 8px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.taskCardDone .taskCardIcon .taskCardCheck {
+  font-size: 8px;
+  font-weight: 600;
+  line-height: 1;
+  color: #fff;
+}
+
+.taskCardBody {
+  flex: 1;
+  min-width: 0;
+}
+
+.taskCardTitle {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--text);
+  margin-bottom: 2px;
+}
+
+[data-theme="light"] .taskCard .taskCardTitle {
+  color: var(--text);
+}
+
+[data-theme="light"] .taskCardSelected .taskCardTitle {
+  color: var(--accent);
+}
+
+.taskCardTag {
+  display: inline-block;
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: rgba(88, 166, 255, 0.2);
+  color: var(--accent);
+  margin-right: 6px;
+  margin-bottom: 4px;
+}
+
+.taskCardQuizTag {
+  background: rgba(63, 185, 80, 0.2);
+  color: var(--success);
+}
+
+.taskCardDesc {
+  font-family: "PingFang SC", sans-serif;
+  font-size: 12px;
+  color: var(--text-muted);
+  margin: 0;
+  line-height: 1.4;
+}
+
+[data-theme="light"] .taskCard .taskCardDesc {
+  color: var(--text-body);
+}
+
+[data-theme="light"] .taskCardSelected .taskCardDesc {
+  color: var(--text-muted);
+}
+
+/* 第三列：高度自适应视窗，代码与结果卡片在视窗内完整显示，内容多时各自内部滚动 */
+.colContent {
+  min-width: 0;
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  padding-top: 24px;
+  padding-right: 24px;
+  overflow: hidden;
+  background: var(--bg-col-third);
+}
+
+/* 脚本与结果卡片的父容器：占满第三列高度 */
+.embedCard {
+  width: 100%;
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.embedCardInner {
+  width: 100%;
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.embedCardInner > div {
+  margin: 0 !important;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.embedPlaceholder {
+  width: 100%;
+  min-height: 380px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  background: var(--bg-code);
+  border: 1px dashed var(--border);
+  border-radius: 12px;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+/* 下一步按钮区域：始终固定在第二列底部，与第1列底部栏高度统一 */
+.colFooter {
+  flex-shrink: 0;
+  padding: 20px 28px;
+  background: var(--bg-panel);
+  position: relative;
+}

@@ -1,0 +1,38 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 99999;
+  overflow: hidden;
+}
+
+.piece {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  opacity: 1;
+  animation: confettiBurst forwards;
+  animation-timing-function: ease-out;
+}
+
+@keyframes confettiBurst {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  10% {
+    opacity: 1;
+    transform: translate(
+        calc(-50% + var(--confetti-tx1, 0px)),
+        calc(-50% + var(--confetti-ty1, 0px))
+      )
+      rotate(calc(var(--confetti-rotate, 0deg) * 0.3));
+  }
+  100% {
+    opacity: 0;
+    transform: translate(
+        calc(-50% + var(--confetti-tx2, 0px)),
+        calc(-50% + var(--confetti-ty2, 0px))
+      )
+      rotate(var(--confetti-rotate, 0deg));
+  }
+}

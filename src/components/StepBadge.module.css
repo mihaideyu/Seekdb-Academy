@@ -1,0 +1,21 @@
+.wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.badge {
+  display: inline-block;
+  padding: 4px 10px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: 6px;
+}
+
+.label {
+  font-size: 13px;
+  color: var(--text-muted);
+}

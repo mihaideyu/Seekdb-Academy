@@ -1,0 +1,43 @@
+.wrapper {
+  display: flex;
+  gap: 12px;
+  margin: 0 0 24px;
+  padding: 14px 18px;
+  background: rgba(88, 166, 255, 0.08);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.wrapperCompact {
+  display: flex;
+  gap: 10px;
+  margin: 0 0 20px;
+  padding: 10px 14px;
+  background: rgba(88, 166, 255, 0.08);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 14px;
+}
+
+.icon {
+  flex-shrink: 0;
+}
+
+.title {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 14px;
+  color: var(--text);
+}
+
+.text {
+  margin: 0;
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.wrapperCompact .text {
+  margin: 0;
+  font-size: 13px;
+}
