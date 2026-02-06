@@ -100,8 +100,66 @@
   border-radius: 10px;
   font-size: 14px;
   line-height: 1.5;
-  white-space: pre-wrap;
   word-break: break-word;
+}
+
+/* 纯文本消息（用户）保留换行 */
+.msgUser .bubble {
+  white-space: pre-wrap;
+}
+
+/* AI 回复的 Markdown 区域：块级排版，清晰层级 */
+.markdown {
+  white-space: normal;
+}
+
+.markdown :first-child {
+  margin-top: 0;
+}
+
+.markdown :last-child {
+  margin-bottom: 0;
+}
+
+.mdP {
+  margin: 0 0 0.75em;
+}
+
+.mdP:last-child {
+  margin-bottom: 0;
+}
+
+.mdH2 {
+  margin: 1em 0 0.5em;
+  font-size: 1em;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.mdH2:first-child {
+  margin-top: 0;
+}
+
+.mdH3 {
+  margin: 0.75em 0 0.35em;
+  font-size: 0.95em;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.mdUl,
+.mdOl {
+  margin: 0.35em 0 0.75em;
+  padding-left: 1.25em;
+}
+
+.mdLi {
+  margin: 0.2em 0;
+}
+
+.mdStrong {
+  font-weight: 600;
+  color: var(--text);
 }
 
 .msgUser .bubble {

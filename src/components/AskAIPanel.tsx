@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
+import ReactMarkdown from 'react-markdown'
 import { useLanguage } from '@/context/LanguageContext'
 import styles from './AskAIPanel.module.css'
 
@@ -108,7 +109,15 @@ export function AskAIPanel({ onClose, embedded }: AskAIPanelProps) {
         <div className={styles.list} ref={listRef}>
           {messages.map((m, i) => (
             <div key={i} className={m.role === 'user' ? styles.msgUser : styles.msgBot}>
-              <div className={styles.bubble}>{m.role === 'assistant' ? formatMessage(m.content) : m.content}</div>
+              <div className={styles.bubble}>
+                {m.role === 'assistant' ? (
+                  <div className={styles.markdown}>
+                    <ReactMarkdown components={markdownComponents}>{normalizeMarkdown(m.content)}</ReactMarkdown>
+                  </div>
+                ) : (
+                  m.content
+                )}
+              </div>
             </div>
           ))}
           {loading && (
@@ -147,21 +156,25 @@ export function AskAIPanel({ onClose, embedded }: AskAIPanelProps) {
   )
 }
 
-function formatMessage(content: string) {
-  const re = /\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g
-  const nodes: React.ReactNode[] = []
-  let lastIndex = 0
-  let match: RegExpExecArray | null
-  let key = 0
-  while ((match = re.exec(content)) !== null) {
-    nodes.push(content.slice(lastIndex, match.index))
-    nodes.push(
-      <a key={key++} href={match[2]} target="_blank" rel="noopener noreferrer" className={styles.docLink}>
-        {match[1]}
-      </a>
-    )
-    lastIndex = re.lastIndex
-  }
-  nodes.push(content.slice(lastIndex))
-  return <>{nodes}</>
+/** 清理无意义的 *** 等符号，保留 **加粗** 的成对星号 */
+function normalizeMarkdown(content: string): string {
+  return content
+    .replace(/\*{3,}/g, '') // 连续 3 个及以上星号整段去掉
+    .replace(/\n\s*\*{2,}\s*\n/g, '\n\n') // 单独一行的 *** 去掉
+    .trim()
+}
+
+const markdownComponents = {
+  p: ({ children, ...props }) => <p className={styles.mdP} {...props}>{children}</p>,
+  h2: ({ children, ...props }) => <h2 className={styles.mdH2} {...props}>{children}</h2>,
+  h3: ({ children, ...props }) => <h3 className={styles.mdH3} {...props}>{children}</h3>,
+  ul: ({ children, ...props }) => <ul className={styles.mdUl} {...props}>{children}</ul>,
+  ol: ({ children, ...props }) => <ol className={styles.mdOl} {...props}>{children}</ol>,
+  li: ({ children, ...props }) => <li className={styles.mdLi} {...props}>{children}</li>,
+  strong: ({ children, ...props }) => <strong className={styles.mdStrong} {...props}>{children}</strong>,
+  a: ({ href, children, ...props }) => (
+    <a href={href} target="_blank" rel="noopener noreferrer" className={styles.docLink} {...props}>
+      {children}
+    </a>
+  ),
 }

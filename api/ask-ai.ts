@@ -90,8 +90,24 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const docContext = await buildDocContext(lang)
   const systemContent =
     lang === 'zh'
-      ? `你是基于 SeekDB 官方文档的 AI 助手。请仅根据以下文档内容回答用户问题；若文档未涉及，可简要说明并建议查阅官网。回答简洁专业，可包含 [链接文字](url) 形式的 Markdown 链接。\n\n## 文档内容\n\n${docContext}`
-      : `You are an AI assistant based on SeekDB official docs. Answer the user's question using only the documentation below. If not covered, say so and suggest the official site. Keep answers concise; you may use [text](url) Markdown links.\n\n## Documentation\n\n${docContext}`
+      ? `你是基于 SeekDB 官方文档的 AI 助手。请仅根据以下文档内容回答用户问题；若文档未涉及，可简要说明并建议查阅官网。
+
+回答格式要求：
+- 具备清晰的信息层级：使用二级标题（##）、三级标题（###）区分大段；用编号列表（1. 2. 3.）或要点列表（- ）组织内容；关键术语用**加粗**。
+- 段落之间空一行，便于阅读。
+- 仅使用 [链接文字](url) 形式的 Markdown 链接，不要使用 *** 或其它无意义的装饰符号。
+- 回答简洁专业，避免冗长堆砌。
+
+## 文档内容\n\n${docContext}`
+      : `You are an AI assistant based on SeekDB official docs. Answer the user's question using only the documentation below. If not covered, say so and suggest the official site.
+
+Format requirements:
+- Use clear hierarchy: ## and ### for sections, numbered (1. 2. 3.) or bullet (- ) lists; **bold** key terms only.
+- One blank line between paragraphs.
+- Use only [text](url) for links; do not use *** or other decorative symbols.
+- Keep answers concise and professional.
+
+## Documentation\n\n${docContext}`
 
   try {
     const completionRes = await fetch('https://api.deepseek.com/v1/chat/completions', {
