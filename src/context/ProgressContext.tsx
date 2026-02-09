@@ -20,7 +20,7 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
       const raw = localStorage.getItem(STORAGE_KEY)
       if (raw) {
         const arr = JSON.parse(raw) as string[]
-        return new Set(arr.filter((id) => getLesson(id)?.fullContent === true))
+        return new Set(arr)
       }
     } catch (_) {}
     return new Set()
@@ -54,8 +54,10 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
     }
   }, [lastVisitedLessonId])
 
+  /** 支持课程 id（如 overview）与任务 id（如 overview-dev-mode）。仅拒绝「已知课程且未开发」的 id */
   const markComplete = useCallback((id: string) => {
-    if (getLesson(id)?.fullContent !== true) return
+    const lesson = getLesson(id)
+    if (lesson != null && lesson.fullContent !== true) return
     setCompletedIds((prev) => new Set(prev).add(id))
   }, [])
 

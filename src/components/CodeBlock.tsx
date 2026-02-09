@@ -2,6 +2,13 @@ import { useState, useMemo, useEffect, useRef, useLayoutEffect } from 'react'
 import { useLanguage } from '@/context/LanguageContext'
 import styles from './CodeBlock.module.css'
 
+/** 用 ref 保存最新 onRun，避免 setTimeout/fetch 回调中闭包拿到旧引用导致完成态未触发 */
+function useOnRunRef(onRun: (() => void) | undefined) {
+  const ref = useRef(onRun)
+  ref.current = onRun
+  return ref
+}
+
 export type ResultViewMode = 'raw' | 'table' | 'chart'
 
 interface CodeBlockProps {
@@ -72,6 +79,7 @@ export function CodeBlock({
   const [running, setRunning] = useState(false)
   const [execTimeMs, setExecTimeMs] = useState<number | null>(null)
   const [viewMode, setViewMode] = useState<ResultViewMode>('raw')
+  const onRunRef = useOnRunRef(onRun)
 
   const hasEditable = editableSnippet != null && editableSnippet.length > 0 && code.includes(editableSnippet)
   const [editableValue, setEditableValue] = useState(hasEditable ? editableSnippet : '')
@@ -112,7 +120,7 @@ export function CodeBlock({
       setApiResultData(null)
       setExecTimeMs(Math.max(1, Math.round(Date.now() - start)))
       setRunning(false)
-      onRun?.()
+      onRunRef.current?.()
     }
 
     if (language === 'sql' && fullCode.trim()) {
@@ -134,7 +142,7 @@ export function CodeBlock({
             setApiResultData(null)
           }
           setRunning(false)
-          onRun?.()
+          onRunRef.current?.()
         })
         .catch(() => {
           finishWithSimulated()

@@ -124,6 +124,13 @@ export function Quiz(props: QuizQuestion) {
   )
 }
 
+/** 用 ref 保存最新 onComplete，避免依赖 useEffect 闭包导致完成态未触发 */
+function useOnCompleteRef(onComplete: (() => void) | undefined) {
+  const ref = useRef(onComplete)
+  ref.current = onComplete
+  return ref
+}
+
 /** 多题模式：多道题 + 正确数汇总；多题时仅在最后一题底部显示一个【提交答案】按钮 */
 export function QuizSet({
   questions,
@@ -140,6 +147,13 @@ export function QuizSet({
   const [allSubmitted, setAllSubmitted] = useState(false)
   const [singleScore, setSingleScore] = useState<boolean | null>(null)
   const onCompleteFired = useRef(false)
+  const onCompleteRef = useOnCompleteRef(onComplete)
+
+  const fireComplete = () => {
+    if (onCompleteFired.current) return
+    onCompleteFired.current = true
+    onCompleteRef.current?.()
+  }
 
   const { t } = useLanguage()
   const correctCount = isMulti && allSubmitted
@@ -148,11 +162,8 @@ export function QuizSet({
   const allDone = isMulti ? allSubmitted : singleScore !== null
 
   useEffect(() => {
-    if (allDone && onComplete && !onCompleteFired.current) {
-      onCompleteFired.current = true
-      onComplete()
-    }
-  }, [allDone, onComplete])
+    if (allDone && !onCompleteFired.current) fireComplete()
+  }, [allDone])
 
   if (questions.length === 0) return null
 
@@ -164,7 +175,10 @@ export function QuizSet({
         <SingleQuiz
           {...questions[0]}
           name="quiz-0"
-          onSubmit={(correct) => setSingleScore(correct)}
+          onSubmit={(correct) => {
+            setSingleScore(correct)
+            fireComplete()
+          }}
         />
         {singleScore !== null && (
           <div className={styles.summary}>
@@ -182,6 +196,7 @@ export function QuizSet({
   const handleUnifiedSubmit = () => {
     if (!canSubmit) return
     setAllSubmitted(true)
+    fireComplete()
   }
 
   return (
